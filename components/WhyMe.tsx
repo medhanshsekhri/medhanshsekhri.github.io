@@ -3,12 +3,13 @@
 import { useRef } from "react";
 import Image from "next/image";
 import { motion, useInView } from "framer-motion";
+import { LineReveal } from "./Reveal";
 
 const PARAGRAPHS = [
-  <>A lot of people say they&apos;re passionate about aerospace. <strong className="text-text font-semibold">I build things.</strong> Before second year. Before anyone told me to.</>,
-  <>I didn&apos;t wait for a class to teach me C++. I taught myself and built a functioning radar scanner.</>,
-  <>I&apos;m <strong className="text-text font-semibold">hungry</strong> in a way that doesn&apos;t switch off. My parents gave up everything to put me here and I treat every day like that means something.</>,
-  <>There is an itch that never goes away. A curiosity that does not ask for permission. I do not wait to be assigned a problem. I find one, pick it apart, and build something from what is left. That drive is not something I learned. It is just the way I am wired.</>,
+  <>I&apos;m a first-year engineering student at the University of Queensland (BEng(Hons) + MEng), headed for mechatronics and aerospace.</>,
+  <>Most of what I know about embedded systems came from outside the classroom. In high school I taught myself C++ and built an ultrasonic radar scanner around an Arduino — sweep logic, servo control, and a live visualisation in Processing. The code is on <a href="https://github.com/medhanshsekhri/Arduino-Radar-Scanner" target="_blank" rel="noopener noreferrer" className="text-text font-semibold underline underline-offset-4 decoration-border hover:decoration-accent transition-colors">GitHub</a>.</>,
+  <>At UQ I led a four-person ENGG1100 team building a flood-resistant house that holds position in rising water. I owned the motor-control circuit and the firmware, and we delivered under a $170 budget.</>,
+  <>Outside uni I&apos;m a certified remote pilot (Certificate III in Aviation) through the Australian Air Force Cadets, and I&apos;ve flown a Diamond DA40 at RAAF Amberley. Current project: an obstacle-avoiding drone built on the radar work.</>,
 ];
 
 const PHOTOS = [
@@ -23,9 +24,15 @@ const PHOTOS = [
   { src: "/nightlight.jpg",  alt: "Custom night light build" },
 ];
 
-function PhotoTile({ src, alt, eager }: { src: string; alt: string; eager: boolean }) {
+function PhotoTile({ src, alt, eager, index }: { src: string; alt: string; eager: boolean; index: number }) {
   return (
-    <div className="group relative aspect-square overflow-hidden rounded-md border border-border bg-elevated">
+    <motion.div
+      className="group relative aspect-square overflow-hidden rounded-md border border-border bg-elevated"
+      initial={{ opacity: 0, y: 18, scale: 0.96 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.5, delay: index * 0.05, ease: [0.16, 1, 0.3, 1] }}
+    >
       {/* Shimmer sits behind; the loaded photo paints over it. */}
       <div className="absolute inset-0 shimmer" aria-hidden />
       <Image
@@ -33,7 +40,7 @@ function PhotoTile({ src, alt, eager }: { src: string; alt: string; eager: boole
         alt={alt}
         fill
         sizes="(max-width: 768px) 30vw, 170px"
-        priority={eager}
+        preload={eager}
         className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.06]"
       />
       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/45 transition-colors duration-300 flex items-end p-2">
@@ -41,7 +48,7 @@ function PhotoTile({ src, alt, eager }: { src: string; alt: string; eager: boole
           {alt}
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 }
 
@@ -65,32 +72,33 @@ export default function WhyMe() {
     <section id="about" className="py-24 px-6 md:px-16">
       <div className="max-w-5xl mx-auto">
         <div>
-          <p className="text-muted text-xs uppercase tracking-[0.22em] font-body mb-3">About</p>
-          <h2
-            className="font-display font-semibold text-text mb-12"
-            style={{ fontSize: "clamp(3rem, 6vw, 5rem)", lineHeight: 1 }}
-          >
-            Why Me<span className="text-accent">?</span>
-          </h2>
+          <LineReveal>
+            <h2
+              className="font-display font-semibold text-text mb-12"
+              style={{ fontSize: "clamp(3rem, 6vw, 5rem)", lineHeight: 1 }}
+            >
+              About<span className="text-accent">.</span>
+            </h2>
+          </LineReveal>
         </div>
 
         <div className="grid md:grid-cols-2 gap-16 mb-20">
           <div className="space-y-6">
             {PARAGRAPHS.map((para, i) => (
-              <p key={i} className="font-body text-base md:text-lg leading-relaxed text-muted">
-                {para}
-              </p>
+              <FadeUp key={i} delay={i * 0.08}>
+                <p className="font-body text-base md:text-lg leading-relaxed text-muted">
+                  {para}
+                </p>
+              </FadeUp>
             ))}
           </div>
 
-          {/* Photo grid: tidy 3x3 of uniform tiles, contained to one screen */}
-          <FadeUp delay={0.15}>
-            <div className="grid grid-cols-3 gap-2.5">
-              {PHOTOS.map((photo, i) => (
-                <PhotoTile key={photo.src} src={photo.src} alt={photo.alt} eager={i < 3} />
-              ))}
-            </div>
-          </FadeUp>
+          {/* Photo grid: tidy 3x3 of uniform tiles, each settling in on its own beat */}
+          <div className="grid grid-cols-3 gap-2.5">
+            {PHOTOS.map((photo, i) => (
+              <PhotoTile key={photo.src} src={photo.src} alt={photo.alt} eager={i < 3} index={i} />
+            ))}
+          </div>
         </div>
       </div>
     </section>

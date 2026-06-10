@@ -3,6 +3,8 @@
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { GlassEffect, GlassFilter } from "@/components/ui/liquid-glass";
+import { LineReveal } from "./Reveal";
+import SwapText from "./SwapText";
 
 function FadeUp({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -48,28 +50,24 @@ const CREDENTIALS = [
     title: "Certificate III in Aviation",
     body: "Certified remote pilot for UAV operations under CASA guidelines. Trained in airspace regulations, flight planning, and safe operation of unmanned aircraft systems.",
   },
-  {
-    category: "In Progress",
-    title: "More Coming",
-    body: "Actively building toward additional certifications in embedded systems and aerospace. Watch this space.",
-  },
 ];
 
 export default function Contact() {
   return (
     <section id="contact" className="py-24 px-6 md:px-16">
       <div className="max-w-5xl mx-auto">
-        <FadeUp>
+        <LineReveal>
           <h2
             className="font-display font-semibold text-text mb-6"
             style={{ fontSize: "clamp(3rem, 6vw, 5rem)", lineHeight: 1 }}
           >
             Get in Touch<span className="text-accent">.</span>
           </h2>
+        </LineReveal>
+        <FadeUp>
           <p className="font-body text-muted text-base leading-relaxed max-w-xl mb-12">
-            Most engineers wait to be discovered. I don&apos;t. If you&apos;re looking for someone who
-            builds before they&apos;re asked, learns before they&apos;re taught, and leads before
-            they&apos;re told. Let&apos;s talk.
+            I&apos;m after internships and project work in autonomous systems and aerospace.
+            If you&apos;re building something in that space, I&apos;d like to hear about it.
           </p>
         </FadeUp>
 
@@ -81,10 +79,10 @@ export default function Contact() {
                 key={link.label}
                 href={link.href}
                 external={link.external}
-                className="rounded-full px-7 py-3.5 hover:scale-[1.04]"
+                className="swap-trigger rounded-full px-7 py-3.5 hover:scale-[1.04]"
               >
                 <span className="text-sm font-body font-medium text-text whitespace-nowrap">
-                  {link.label}
+                  <SwapText text={link.label} />
                 </span>
               </GlassEffect>
             ))}

@@ -1,6 +1,16 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useLayoutEffect, useRef } from "react";
+import {
+  motion,
+  useAnimationFrame,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+  useVelocity,
+} from "framer-motion";
 
 const ITEMS = [
   "Aerospace",
@@ -14,67 +24,99 @@ const ITEMS = [
   "PID Control",
   "Robotics",
   "Mechatronics",
-  "First Principles",
+  "OpenRocket",
 ];
 
+function wrap(min: number, max: number, v: number) {
+  const range = max - min;
+  return min + ((((v - min) % range) + range) % range);
+}
+
 interface TechMarqueeProps {
-  pixelsPerFrame?: number;
+  baseSpeed?: number; // px per second at rest
   rotateY?: number;
   rotateX?: number;
   perspective?: number;
-  speed?: number;
 }
 
+// Scroll-velocity-reactive marquee: drifts left at rest, accelerates with
+// scroll speed and reverses direction when you scroll back up.
 export default function TechMarquee({
-  pixelsPerFrame = 2,
+  baseSpeed = 75,
   rotateY = -22,
   rotateX = 6,
   perspective = 1200,
-  speed = 1,
 }: TechMarqueeProps) {
+  const reduce = useReducedMotion();
   const trackRef = useRef<HTMLDivElement>(null);
+  const unitWidth = useRef(0);
 
-  useEffect(() => {
-    // One repetition's width, measured from the first half of the doubled track.
-    let unitWidth = 0;
+  const baseX = useMotionValue(0);
+  const { scrollY } = useScroll();
+  const scrollVelocity = useVelocity(scrollY);
+  const smoothVelocity = useSpring(scrollVelocity, { damping: 60, stiffness: 350 });
+  const velocityFactor = useTransform(smoothVelocity, [-1200, 0, 1200], [-3, 0, 3], {
+    clamp: false,
+  });
+  const direction = useRef(-1);
+
+  useLayoutEffect(() => {
     const measure = () => {
-      const el = trackRef.current;
-      if (el) unitWidth = el.scrollWidth / 2;
+      // One repetition's width, from the first third of the tripled track
+      if (trackRef.current) unitWidth.current = trackRef.current.scrollWidth / 3;
     };
     measure();
     window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
 
-    let raf = 0;
-    let start: number | undefined;
-    const loop = (t: number) => {
-      if (start === undefined) start = t;
-      const frame = ((t - start) / 16.6667) * speed;
-      const offset = unitWidth > 0 ? -((frame * pixelsPerFrame) % unitWidth) : 0;
-      if (trackRef.current) trackRef.current.style.transform = `translateX(${offset}px)`;
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
+  useAnimationFrame((_, delta) => {
+    if (reduce) return;
+    const vf = velocityFactor.get();
+    if (vf > 0.1) direction.current = -1;
+    else if (vf < -0.1) direction.current = 1;
+    let moveBy = direction.current * baseSpeed * (delta / 1000);
+    moveBy *= 1 + Math.abs(vf);
+    baseX.set(baseX.get() + moveBy);
+  });
 
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("resize", measure);
-    };
-  }, [pixelsPerFrame, speed]);
+  const x = useTransform(baseX, (v) =>
+    unitWidth.current > 0 ? `${wrap(-unitWidth.current, 0, v)}px` : "0px"
+  );
 
-  // Doubled so the loop is seamless.
-  const rendered = [...ITEMS, ...ITEMS];
+  // Tripled so the loop stays seamless in both directions
+  const rendered = [...ITEMS, ...ITEMS, ...ITEMS];
 
   return (
     <section
       aria-hidden
       className="relative w-full overflow-hidden select-none"
-      style={{ height: "clamp(140px, 22vh, 260px)", perspective: `${perspective}px` }}
+      style={{
+        height: "clamp(140px, 22vh, 260px)",
+        perspective: `${perspective}px`,
+        // Edge fades via masks, so the page background (stars/grid) stays visible
+        maskImage:
+          "linear-gradient(180deg, transparent 0%, black 30%, black 70%, transparent 100%)",
+        WebkitMaskImage:
+          "linear-gradient(180deg, transparent 0%, black 30%, black 70%, transparent 100%)",
+      }}
     >
       <div
         className="absolute inset-0 flex items-center"
-        style={{ transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`, transformStyle: "preserve-3d" }}
+        style={{
+          transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+          transformStyle: "preserve-3d",
+          maskImage:
+            "linear-gradient(90deg, transparent 0%, black 16%, black 84%, transparent 100%)",
+          WebkitMaskImage:
+            "linear-gradient(90deg, transparent 0%, black 16%, black 84%, transparent 100%)",
+        }}
       >
-        <div ref={trackRef} className="flex whitespace-nowrap will-change-transform">
+        <motion.div
+          ref={trackRef}
+          className="flex whitespace-nowrap will-change-transform"
+          style={reduce ? undefined : { x }}
+        >
           {rendered.map((item, i) => (
             <span
               key={i}
@@ -90,24 +132,9 @@ export default function TechMarquee({
               <span className="text-accent/40"> · </span>
             </span>
           ))}
-        </div>
+        </motion.div>
       </div>
 
-      {/* Edge fades for depth */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(90deg, var(--clr-bg) 0%, transparent 16%, transparent 84%, var(--clr-bg) 100%)",
-        }}
-      />
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            "linear-gradient(180deg, var(--clr-bg) 0%, transparent 30%, transparent 70%, var(--clr-bg) 100%)",
-        }}
-      />
     </section>
   );
 }

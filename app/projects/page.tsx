@@ -1,93 +1,184 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { ArrowLeft, Sun, Moon } from "lucide-react";
 
-type Media =
-  | { type: "img"; src: string; alt: string; w: number; h: number }
-  | { type: "video"; src: string; alt: string };
+type Photo = { src: string; alt: string; w: number; h: number };
 
-// Every image in /public, mixed across projects and personal shots.
-const MEDIA: Media[] = [
-  { type: "img", src: "/frontview.jpg", alt: "Radar scanner front", w: 1050, h: 1032 },
-  { type: "video", src: "/video1.mp4", alt: "Radar scanner in action" },
-  { type: "img", src: "/Soldering.jpg", alt: "Soldering electronics", w: 1330, h: 2364 },
-  { type: "img", src: "/circuit_image.png", alt: "Radar circuit diagram", w: 2528, h: 2495 },
-  { type: "img", src: "/topview.jpg", alt: "Radar scanner top", w: 787, h: 1002 },
-  { type: "img", src: "/dragster.jpg", alt: "CO2 dragster", w: 3456, h: 4608 },
-  { type: "video", src: "/dragster_video.mp4", alt: "CO2 dragster run" },
-  { type: "img", src: "/cadets.jpg", alt: "Air Force Cadets bivouac", w: 4080, h: 3060 },
-  { type: "img", src: "/sideview.jpg", alt: "Radar scanner side", w: 1081, h: 858 },
-  { type: "img", src: "/rocket_upright.jpg", alt: "Model rocket", w: 3456, h: 4608 },
-  { type: "video", src: "/rocket_video.mp4", alt: "Rocket launch" },
-  { type: "img", src: "/topview2.jpg", alt: "Radar scanner detail", w: 990, h: 1205 },
-  { type: "img", src: "/tower_top.jpg", alt: "Balsa truss tower top", w: 885, h: 1920 },
-  { type: "img", src: "/networking.jpg", alt: "International Science School gala", w: 5950, h: 3967 },
-  { type: "img", src: "/tower_side.jpg", alt: "Balsa truss tower side", w: 885, h: 1920 },
-  { type: "img", src: "/rover_front.jpg", alt: "Warehouse rover front", w: 887, h: 1920 },
-  { type: "img", src: "/biology.jpg", alt: "Live fluke analysis, University of Sydney", w: 1180, h: 1572 },
-  { type: "img", src: "/rover_side.jpg", alt: "Warehouse rover side", w: 887, h: 1920 },
-  { type: "img", src: "/nightlight.jpg", alt: "Custom night light build", w: 885, h: 1920 },
-  { type: "img", src: "/news.jpg", alt: "WIN News interview", w: 6720, h: 4480 },
-  { type: "img", src: "/pose.jpg", alt: "Arduino project", w: 1206, h: 1608 },
-  { type: "img", src: "/diamondda40.jpg", alt: "Flying a Diamond DA40 at RAAF Amberley", w: 4080, h: 3060 },
-  { type: "img", src: "/UQ.jpg", alt: "University of Queensland", w: 1884, h: 2713 },
-  { type: "img", src: "/news2.jpg", alt: "Together for Humanity Youth Summit", w: 1080, h: 720 },
+interface Project {
+  title: string;
+  meta: string;        // context · year
+  description: string; // 2–3 lines, plain and factual
+  outcome: string;
+  tools: string[];
+  github?: string;
+  video?: { src: string; label: string };
+  photos: Photo[];
+}
+
+const PROJECTS: Project[] = [
+  {
+    title: "Flood-Resistant Station-Keeping House",
+    meta: "UQ · ENGG1100 · 2025",
+    description:
+      "A model house that holds position in rising floodwater. I led a four-person team and owned the electronics and firmware: an Arduino UNO R3 reading an MPU-6050, driving DC motors through an L298N H-bridge on an XPS foam hull.",
+    outcome: "Held position under simulated flood conditions, delivered under the $170 budget.",
+    tools: ["Arduino UNO R3", "MPU-6050", "L298N", "C++", "XPS Foam", "Tinkercad"],
+    photos: [],
+  },
+  {
+    title: "Autonomous Radar Scanner",
+    meta: "Personal · 2024",
+    description:
+      "A 180° ultrasonic radar built around an Arduino UNO: an HC-SR04 rangefinder on a servo sweeps the field of view while a Processing app renders detections in real time. All sweep and detection logic written from scratch in C++.",
+    outcome: "Real-time object mapping across the full 180° sweep with a live radar display.",
+    tools: ["C++", "Arduino UNO", "HC-SR04", "SG90 Servo", "Processing"],
+    github: "https://github.com/medhanshsekhri/Arduino-Radar-Scanner",
+    video: { src: "/video1.mp4", label: "Live sweep" },
+    photos: [
+      { src: "/frontview.jpg",    alt: "Radar scanner, front view",  w: 1050, h: 1032 },
+      { src: "/topview.jpg",      alt: "Radar scanner, top view",    w: 787,  h: 1002 },
+      { src: "/sideview.jpg",     alt: "Radar scanner, side view",   w: 1081, h: 858  },
+      { src: "/circuit_image.png", alt: "Radar circuit diagram",     w: 1920, h: 1895 },
+    ],
+  },
+  {
+    title: "CO2 Dragster",
+    meta: "High School · 2023",
+    description:
+      "A 45 g CO2-powered dragster modelled in Fusion 360 and machined from balsa, shaped to minimise frontal area and drag within competition rules.",
+    outcome: "0.49 s over the 1 m track — top 5 in the year group.",
+    tools: ["Fusion 360", "Balsa", "CNC", "Aerodynamics"],
+    video: { src: "/dragster_video.mp4", label: "Race run" },
+    photos: [{ src: "/dragster.jpg", alt: "CO2 dragster", w: 1440, h: 1920 }],
+  },
+  {
+    title: "Model Rocket",
+    meta: "High School · 2022",
+    description:
+      "Designed and simulated in OpenRocket to verify the stability margin before construction, then built, balanced, and launched on a B6-4 motor.",
+    outcome: "97 m apogee, stable flight, clean parachute recovery.",
+    tools: ["OpenRocket", "B6-4 Motor", "Flight Dynamics"],
+    video: { src: "/rocket_video.mp4", label: "Launch" },
+    photos: [{ src: "/rocket_upright.jpg", alt: "Model rocket on the pad", w: 1440, h: 1920 }],
+  },
+  {
+    title: "Balsa Truss Tower",
+    meta: "High School · 2022",
+    description:
+      "A balsa truss tower built for a structural efficiency competition. Geometry chosen to maximise load-to-weight ratio with predictable load paths; joints pinned and glued with weight tracked through the build.",
+    outcome: "Failed exactly at the designed weak point under class load testing.",
+    tools: ["Truss Design", "Balsa", "Structural Analysis", "Load Testing"],
+    photos: [
+      { src: "/tower_side.jpg", alt: "Truss tower, side view", w: 885, h: 1920 },
+      { src: "/tower_top.jpg",  alt: "Truss tower, top view",  w: 885, h: 1920 },
+    ],
+  },
+  {
+    title: "Autonomous Warehouse Rover",
+    meta: "High School · 2021",
+    description:
+      "A LEGO Mindstorms EV3 rover programmed to clear a warehouse-style obstacle course with no human input — ultrasonic sensor for obstacle detection, colour sensor for line following.",
+    outcome: "Completed the full course autonomously.",
+    tools: ["LEGO EV3", "EV3-G", "Ultrasonic Sensor", "Colour Sensor"],
+    photos: [
+      { src: "/rover_front.jpg", alt: "Warehouse rover, front view", w: 887, h: 1920 },
+      { src: "/rover_side.jpg",  alt: "Warehouse rover, side view",  w: 887, h: 1920 },
+    ],
+  },
 ];
 
-// Tile background palette; CSS vars auto-swap between light and dark schemes.
-const COLORS = [
-  "var(--name-1)",
-  "var(--name-2)",
-  "var(--name-3)",
-  "var(--name-4)",
-  "var(--name-5)",
-  "var(--name-6)",
-];
+function ProjectCard({ project, index }: { project: Project; index: number }) {
+  const hasMedia = project.photos.length > 0 || project.video;
 
-function MediaTile({ media, color }: { media: Media; color: string }) {
-  if (media.type === "video") {
-    return (
-      <div className="rounded-xl overflow-hidden border border-border bg-black">
-        <video
-          className="w-full h-auto block"
-          src={media.src}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-        />
-      </div>
-    );
-  }
-
-  // Coloured box hugs the photo: a small uniform frame, no dead space.
   return (
-    <div className="rounded-xl p-2 md:p-2.5" style={{ background: color }}>
-      <div className="relative overflow-hidden rounded-lg">
-        <Image
-          src={media.src}
-          alt={media.alt}
-          width={media.w}
-          height={media.h}
-          sizes="(max-width: 768px) 50vw, 25vw"
-          className="w-full h-auto block transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-        />
+    <motion.article
+      className="glass-panel rounded-2xl overflow-hidden"
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-60px" }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <div className={hasMedia ? "grid md:grid-cols-2" : ""}>
+        {hasMedia && (
+          <div className="p-4 md:p-5 flex flex-col gap-3">
+            {project.video && (
+              <video
+                className="w-full h-auto block rounded-lg border border-border bg-black"
+                src={project.video.src}
+                controls
+                muted
+                playsInline
+                preload="metadata"
+                aria-label={`${project.title} — ${project.video.label}`}
+              />
+            )}
+            <div className={`grid gap-3 ${project.photos.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
+              {project.photos.map((photo) => (
+                <div key={photo.src} className="relative aspect-[4/5] rounded-lg overflow-hidden border border-border bg-elevated">
+                  <Image
+                    src={photo.src}
+                    alt={photo.alt}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                    className="object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="p-6 md:p-8 flex flex-col justify-center">
+          <p className="text-muted text-xs uppercase tracking-[0.22em] font-body mb-3">
+            {String(index + 1).padStart(2, "0")} · {project.meta}
+          </p>
+          <h2 className="font-display font-semibold text-text leading-tight text-2xl md:text-3xl mb-4">
+            {project.title}
+          </h2>
+          <p className="font-body text-sm md:text-base text-muted leading-relaxed mb-5">
+            {project.description}
+          </p>
+
+          <div className="border-l-2 border-accent pl-4 mb-6">
+            <p className="text-muted text-[10px] uppercase tracking-wider font-body mb-1">Outcome</p>
+            <p className="font-body text-sm text-text leading-relaxed">{project.outcome}</p>
+          </div>
+
+          <div className="flex flex-wrap gap-2">
+            {project.tools.map((tool) => (
+              <span
+                key={tool}
+                className="inline-flex px-3 py-1 rounded-full text-xs font-body border border-border text-muted"
+              >
+                {tool}
+              </span>
+            ))}
+          </div>
+
+          {project.github && (
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 self-start mt-6 px-5 py-2.5 border border-text text-text text-sm font-body rounded-full hover:bg-text hover:text-bg transition-colors"
+            >
+              View on GitHub ↗
+            </a>
+          )}
+        </div>
       </div>
-    </div>
+    </motion.article>
   );
 }
 
-export default function ProjectsGallery() {
+export default function ProjectsPage() {
   const [isDark, setIsDark] = useState<boolean>(
     () => typeof document !== "undefined" && document.documentElement.classList.contains("dark")
   );
-  const [cols, setCols] = useState(4);
-  const [count, setCount] = useState(MEDIA.length * 2);
-  const sentinel = useRef<HTMLDivElement>(null);
 
   const toggleDark = () => {
     const next = !isDark;
@@ -95,37 +186,6 @@ export default function ProjectsGallery() {
     document.documentElement.classList.toggle("dark", next);
     localStorage.setItem("theme", next ? "dark" : "light");
   };
-
-  // Responsive column count, recomputed on resize.
-  useEffect(() => {
-    const compute = () => {
-      const w = window.innerWidth;
-      setCols(w < 768 ? 2 : w < 1280 ? 3 : 4);
-    };
-    compute();
-    window.addEventListener("resize", compute);
-    return () => window.removeEventListener("resize", compute);
-  }, []);
-
-  // Endless scroll: append another full pass of the media whenever the
-  // sentinel nears the viewport.
-  const loadMore = useCallback(() => setCount((c) => c + MEDIA.length), []);
-  useEffect(() => {
-    const el = sentinel.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      (entries) => { if (entries[0].isIntersecting) loadMore(); },
-      { rootMargin: "1200px" }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, [loadMore]);
-
-  // Round-robin into fixed columns so appended items never reflow earlier ones.
-  const columns: { media: Media; g: number }[][] = Array.from({ length: cols }, () => []);
-  for (let g = 0; g < count; g++) {
-    columns[g % cols].push({ media: MEDIA[g % MEDIA.length], g });
-  }
 
   return (
     <div className="relative z-10 min-h-screen">
@@ -155,19 +215,23 @@ export default function ProjectsGallery() {
         </button>
       </header>
 
-      <div className="flex gap-2.5 p-2.5 items-start">
-        {columns.map((col, ci) => (
-          <div key={ci} className="flex-1 flex flex-col gap-2.5">
-            {col.map(({ media, g }) => (
-              <div key={g} className="group">
-                <MediaTile media={media} color={COLORS[g % COLORS.length]} />
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
+      <main className="max-w-5xl mx-auto px-5 md:px-8 py-14 md:py-20">
+        <h1
+          className="font-display font-semibold text-text mb-3"
+          style={{ fontSize: "clamp(3rem, 6vw, 5rem)", lineHeight: 1 }}
+        >
+          Projects<span className="text-accent">.</span>
+        </h1>
+        <p className="font-body text-muted text-base leading-relaxed max-w-xl mb-12">
+          Six builds across structures, vehicles, and autonomous systems — newest first.
+        </p>
 
-      <div ref={sentinel} className="h-px w-full" aria-hidden />
+        <div className="flex flex-col gap-8">
+          {PROJECTS.map((project, i) => (
+            <ProjectCard key={project.title} project={project} index={i} />
+          ))}
+        </div>
+      </main>
     </div>
   );
 }

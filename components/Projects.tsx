@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState, useRef } from "react";
 import {
   motion,
   useInView,
@@ -11,6 +11,7 @@ import {
 } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Modal from "./Modal";
+import { LineReveal } from "./Reveal";
 
 // Frosted-glass surface (CSS approximation, not Apple Liquid Glass).
 // Styling lives in the .glass-panel class in globals.css.
@@ -65,6 +66,11 @@ function TiltCard({
         aria-label={ariaLabel}
       >
         {children}
+        {/* HUD targeting brackets: draw in on hover, like a viewfinder lock */}
+        <span className="hud-corner hud-corner--tl" aria-hidden />
+        <span className="hud-corner hud-corner--tr" aria-hidden />
+        <span className="hud-corner hud-corner--bl" aria-hidden />
+        <span className="hud-corner hud-corner--br" aria-hidden />
       </motion.button>
     </div>
   );
@@ -76,7 +82,6 @@ interface Project {
   meta: string;
   year: string;
   imageSrc: string | null;
-  noImageBg?: string;
   rotate?: boolean;
   aspect?: number; // displayed width/height, so the card box hugs the image
   summary: string;
@@ -97,14 +102,7 @@ const PROJECTS: Project[] = [
     imageSrc: null, aspect: 1.6,
     summary: "Team-led, flood-resistant house that holds position in rising water, delivered on a $170 budget.",
     outcome: "Held position under simulated flood · under budget",
-    tech: ["Arduino", "C++", "L298N", "CAD"],
-  },
-  {
-    id: 3, title: "Autonomous Obstacle-Dodging Drone", meta: "Personal · WIP", year: "2025",
-    imageSrc: null, noImageBg: "#0a0f1e", aspect: 1.6,
-    summary: "A hovering drone that detects and dodges moving obstacles in real time, built on the radar work.",
-    outcome: "In active development",
-    tech: ["Flight Control", "PID", "Ultrasonics", "C++"],
+    tech: ["Arduino UNO R3", "MPU-6050", "L298N", "C++"],
   },
   {
     id: 4, title: "CO2 Dragster", meta: "High School", year: "2023",
@@ -165,7 +163,6 @@ function ProjectModalContent({ id }: { id: number }) {
       <div className="flex flex-wrap gap-2 mb-8">
         {["Arduino UNO", "C++", "L298N H-Bridge", "12V DC Motors", "3D Printing", "Tinkercad", "XPS Foam", "Corflute"].map((t) => <TechPill key={t} label={t} />)}
       </div>
-      <p className="text-muted text-sm font-body italic">Photos and video coming soon.</p>
     </div>
   );
 
@@ -209,21 +206,6 @@ function ProjectModalContent({ id }: { id: number }) {
       <a href="https://github.com/medhanshsekhri/Arduino-Radar-Scanner" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-2.5 border border-text text-text text-sm font-body hover:bg-text hover:text-bg transition-colors rounded">
         View on GitHub ↗
       </a>
-    </div>
-  );
-
-  if (id === 3) return (
-    <div>
-      <p className="text-muted text-xs uppercase tracking-widest font-body mb-2">Personal Project · In Progress</p>
-      <h2 className="font-display text-4xl md:text-5xl font-semibold text-text mb-3">Autonomous Obstacle-Dodging Drone</h2>
-      <p className="text-muted font-body text-base leading-relaxed mb-10">A hovering drone that detects and dodges moving objects in real time. Built from first principles.</p>
-      <div className="border-l-2 border-border pl-6 mb-10">
-        <p className="font-display text-2xl text-text italic leading-snug">&ldquo;The radar scanner was the proof of concept. This is the mission.&rdquo;</p>
-      </div>
-      <p className="text-muted font-body text-sm leading-relaxed mb-8">The radar scanner established the detection layer. The drone is the next step: a platform that uses real-time sensor data to navigate autonomously around moving obstacles. Currently in the design and component selection phase.</p>
-      <div className="flex flex-wrap gap-2">
-        {["Flight Controller","Ultrasonic Sensing","C++","PID Control","In Development"].map((t) => <TechPill key={t} label={t} />)}
-      </div>
     </div>
   );
 
@@ -330,7 +312,7 @@ function ProjectModalContent({ id }: { id: number }) {
       <div className="flex flex-wrap gap-2 mb-10">{["LEGO Mindstorms EV3","EV3-G","Ultrasonic Sensor","Colour Sensor","Autonomous Navigation"].map((t) => <TechPill key={t} label={t} />)}</div>
       <div style={{display:"flex",gap:12,justifyContent:"center"}}>
         <img src="/rover_front.jpg" alt="Rover front" style={{maxHeight:200,width:"auto",objectFit:"contain",borderRadius:8}} onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
-        <img src="/rover_side_.jpg" alt="Rover side" style={{maxHeight:200,width:"auto",objectFit:"contain",borderRadius:8}} onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
+        <img src="/rover_side.jpg" alt="Rover side" style={{maxHeight:200,width:"auto",objectFit:"contain",borderRadius:8}} onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
       </div>
     </div>
   );
@@ -340,18 +322,19 @@ function ProjectModalContent({ id }: { id: number }) {
 
 function ProjectImage({ project }: { project: Project }) {
   if (!project.imageSrc) {
+    // No photos: a flat schematic tile listing the hardware, like a parts callout.
     return (
-      <div
-        className="absolute inset-0 flex items-center justify-center"
-        style={{
-          background:
-            project.noImageBg ??
-            "linear-gradient(160deg, var(--clr-elevated), var(--clr-surface))",
-        }}
-      >
-        <span className="font-display text-2xl text-white/40">
-          {project.meta.includes("WIP") ? "In progress" : "Photos coming soon"}
-        </span>
+      <div className="absolute inset-0 flex items-center justify-center blueprint-tile">
+        <div className="text-center px-6">
+          {project.tech.map((t) => (
+            <p
+              key={t}
+              className="font-body text-xs uppercase tracking-[0.28em] text-muted leading-loose"
+            >
+              {t}
+            </p>
+          ))}
+        </div>
       </div>
     );
   }
@@ -386,19 +369,16 @@ export default function Projects() {
       ref={sectionRef}
       className="py-24 px-6 md:px-16"
     >
-      <motion.div
-        className="mb-10 md:mb-12"
-        initial={{ opacity: 0, y: 20 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.6 }}
-      >
-        <h2
-          className="font-display font-semibold text-text"
-          style={{ fontSize: "clamp(3rem, 6vw, 5rem)", lineHeight: 1 }}
-        >
-          Projects<span className="text-accent">.</span>
-        </h2>
-      </motion.div>
+      <div className="mb-10 md:mb-12">
+        <LineReveal>
+          <h2
+            className="font-display font-semibold text-text"
+            style={{ fontSize: "clamp(3rem, 6vw, 5rem)", lineHeight: 1 }}
+          >
+            Projects<span className="text-accent">.</span>
+          </h2>
+        </LineReveal>
+      </div>
 
       {/* Latest flagship */}
       <motion.div
@@ -416,11 +396,9 @@ export default function Projects() {
             <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.04]">
               <ProjectImage project={featured} />
             </div>
-            <span className="absolute top-4 left-4 px-3 py-1 rounded-full bg-bg/80 backdrop-blur text-[10px] uppercase tracking-widest font-body text-text">
-              Latest
-            </span>
           </div>
           <div className="p-7 md:p-10 flex flex-col justify-center">
+            <p className="text-muted text-xs uppercase tracking-widest font-body mb-3">Latest build</p>
             <h3 className="font-display font-semibold text-text leading-tight text-3xl lg:text-4xl">
               {featured.title}
             </h3>
@@ -432,31 +410,33 @@ export default function Projects() {
         </TiltCard>
       </motion.div>
 
-      {/* Uniform grid: consistent cards, image centred in the glass frame */}
-      <motion.div
-        className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5"
-        initial={{ opacity: 0, y: 24 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.7, delay: 0.2 }}
-      >
-        {rest.map((p) => (
-          <TiltCard
+      {/* Uniform grid: consistent cards, each rises into view on its own beat */}
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {rest.map((p, i) => (
+          <motion.div
             key={p.id}
-            onClick={() => setModalId(p.id)}
-            ariaLabel={`Open ${p.title}`}
-            className={`group flex flex-col w-full text-left rounded-2xl overflow-hidden transition-colors focus:outline-none hover:border-white/40 ${GLASS_CLASS}`}
+            initial={{ opacity: 0, y: 28 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-60px" }}
+            transition={{ duration: 0.6, delay: (i % 3) * 0.09, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="relative aspect-[4/3] overflow-hidden">
-              <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.04]">
-                <ProjectImage project={p} />
+            <TiltCard
+              onClick={() => setModalId(p.id)}
+              ariaLabel={`Open ${p.title}`}
+              className={`group flex flex-col w-full text-left rounded-2xl overflow-hidden transition-colors focus:outline-none hover:border-white/40 ${GLASS_CLASS}`}
+            >
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.04]">
+                  <ProjectImage project={p} />
+                </div>
               </div>
-            </div>
-            <div className="p-5 border-t border-[var(--glass-border)]">
-              <CardMeta project={p} />
-            </div>
-          </TiltCard>
+              <div className="p-5 border-t border-[var(--glass-border)]">
+                <CardMeta project={p} />
+              </div>
+            </TiltCard>
+          </motion.div>
         ))}
-      </motion.div>
+      </div>
 
       <Modal isOpen={modalId !== null} onClose={() => setModalId(null)}>
         {modalId !== null && <ProjectModalContent id={modalId} />}

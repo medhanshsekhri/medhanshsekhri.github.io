@@ -1,9 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useMotionValueEvent,
+} from "framer-motion";
 import { Sun, Moon, Menu, X } from "lucide-react";
-import GlassNav from "@/components/ui/glass-nav";
+import SwapText from "./SwapText";
 
 const NAV_LINKS = [
   { label: "Projects", href: "/projects" },
@@ -15,12 +20,13 @@ export default function Nav() {
   const [isDark, setIsDark] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [hovered, setHovered] = useState<string | null>(null);
+
+  const { scrollY } = useScroll();
+  useMotionValueEvent(scrollY, "change", (y) => setScrolled(y > 20));
 
   useEffect(() => {
     setIsDark(document.documentElement.classList.contains("dark"));
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   // Lock body scroll when menu open
@@ -38,77 +44,97 @@ export default function Nav() {
 
   return (
     <>
-      <header
-        className="fixed top-0 left-0 right-0 z-50 border-b transition-shadow duration-300"
-        style={{
-          background: "var(--glass-bg)",
-          backdropFilter: "blur(22px) saturate(180%)",
-          WebkitBackdropFilter: "blur(22px) saturate(180%)",
-          borderColor: "var(--glass-border)",
-          boxShadow: scrolled ? "0 8px 30px var(--glass-shadow)" : "none",
-        }}
-      >
-        <nav className="max-w-6xl mx-auto px-5 md:px-6 h-16 flex items-center">
+      {/* Floating pill nav: detached from the edges, never a full-width bar */}
+      <header className="fixed top-4 inset-x-0 z-50 flex justify-center px-4 pointer-events-none">
+        <motion.nav
+          className="pointer-events-auto glass-panel rounded-full flex items-center h-12 pl-5 pr-1.5 gap-1"
+          initial={{ y: -56, opacity: 0 }}
+          animate={{ y: 0, opacity: 1, scale: scrolled ? 0.97 : 1 }}
+          transition={{ type: "spring", stiffness: 260, damping: 26 }}
+          style={{ boxShadow: scrolled ? "0 10px 36px var(--glass-shadow)" : undefined }}
+        >
           <a
             href="#hero"
-            className="font-display font-semibold text-text hover:opacity-75 transition-opacity"
-            style={{ fontSize: "19px", letterSpacing: "-0.01em" }}
+            className="font-display font-semibold text-text hover:opacity-75 transition-opacity mr-2"
+            style={{ fontSize: "18px", letterSpacing: "-0.01em" }}
           >
             Medhansh Sekhri
           </a>
 
-          <div className="ml-auto flex items-center gap-3 md:gap-4">
-            <GlassNav isDark={isDark} />
-
-            <button
-              onClick={toggleDark}
-              className="flex items-center justify-center w-9 h-9 rounded-full border border-border text-muted hover:text-text hover:border-accent transition-colors"
-              aria-label="Toggle theme"
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                {isDark ? (
+          {/* Desktop links with a sliding hover pill */}
+          <div
+            className="relative hidden md:flex items-center"
+            onMouseLeave={() => setHovered(null)}
+          >
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onMouseEnter={() => setHovered(link.href)}
+                className="swap-trigger relative px-3.5 py-1.5 text-sm font-body font-medium text-muted hover:text-text transition-colors rounded-full"
+              >
+                {hovered === link.href && (
                   <motion.span
-                    key="sun"
-                    initial={{ scale: 0, rotate: -90 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    exit={{ scale: 0, rotate: 90 }}
-                    transition={{ type: "spring", stiffness: 450, damping: 18 }}
-                  >
-                    <Sun size={14} />
-                  </motion.span>
-                ) : (
-                  <motion.span
-                    key="moon"
-                    initial={{ scale: 0, rotate: 90 }}
-                    animate={{ scale: 1, rotate: 0 }}
-                    exit={{ scale: 0, rotate: -90 }}
-                    transition={{ type: "spring", stiffness: 450, damping: 18 }}
-                  >
-                    <Moon size={14} />
-                  </motion.span>
+                    layoutId="nav-glider"
+                    className="absolute inset-0 rounded-full bg-text/10"
+                    transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                  />
                 )}
-              </AnimatePresence>
-            </button>
-
-            <button
-              onClick={() => setMenuOpen((p) => !p)}
-              className="md:hidden flex items-center justify-center w-9 h-9 rounded-full border border-border text-muted hover:text-text transition-colors"
-              aria-label="Toggle menu"
-            >
-              <AnimatePresence mode="wait" initial={false}>
-                {menuOpen ? (
-                  <motion.span key="x" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.15 }}>
-                    <X size={14} />
-                  </motion.span>
-                ) : (
-                  <motion.span key="menu" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.15 }}>
-                    <Menu size={14} />
-                  </motion.span>
-                )}
-              </AnimatePresence>
-            </button>
+                <span className="relative z-10">
+                  <SwapText text={link.label} />
+                </span>
+              </a>
+            ))}
           </div>
-        </nav>
+
+          <button
+            onClick={toggleDark}
+            className="flex items-center justify-center w-9 h-9 rounded-full text-muted hover:text-text hover:bg-text/10 transition-colors ml-1"
+            aria-label="Toggle theme"
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              {isDark ? (
+                <motion.span
+                  key="sun"
+                  initial={{ scale: 0, rotate: -90 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  exit={{ scale: 0, rotate: 90 }}
+                  transition={{ type: "spring", stiffness: 450, damping: 18 }}
+                >
+                  <Sun size={14} />
+                </motion.span>
+              ) : (
+                <motion.span
+                  key="moon"
+                  initial={{ scale: 0, rotate: 90 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  exit={{ scale: 0, rotate: -90 }}
+                  transition={{ type: "spring", stiffness: 450, damping: 18 }}
+                >
+                  <Moon size={14} />
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+
+          <button
+            onClick={() => setMenuOpen((p) => !p)}
+            className="md:hidden flex items-center justify-center w-9 h-9 rounded-full text-muted hover:text-text hover:bg-text/10 transition-colors"
+            aria-label="Toggle menu"
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              {menuOpen ? (
+                <motion.span key="x" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.15 }}>
+                  <X size={14} />
+                </motion.span>
+              ) : (
+                <motion.span key="menu" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.15 }}>
+                  <Menu size={14} />
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+        </motion.nav>
       </header>
 
       {/* Full-screen mobile overlay */}

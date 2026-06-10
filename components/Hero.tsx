@@ -1,7 +1,15 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useMotionValue, useSpring } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+} from "framer-motion";
+import SwapText from "./SwapText";
 
 const FIRST = "Medhansh";
 const LAST = " Sekhri.";
@@ -31,6 +39,7 @@ function MagneticLink({
       rel={external ? "noopener noreferrer" : undefined}
       className={className}
       style={{ x, y }}
+      whileTap={{ scale: 0.97 }}
       onMouseMove={(e) => {
         const rect = ref.current?.getBoundingClientRect();
         if (!rect) return;
@@ -45,12 +54,21 @@ function MagneticLink({
 }
 
 export default function Hero() {
+  const reduce = useReducedMotion();
+  const { scrollY } = useScroll();
+  // Hero recedes as you scroll past: slight parallax + fade for depth
+  const contentY = useTransform(scrollY, [0, 700], [0, 130]);
+  const contentOpacity = useTransform(scrollY, [0, 550], [1, 0]);
+
   return (
     <section
       id="hero"
       className="relative min-h-[100dvh] flex flex-col items-center justify-center overflow-hidden bg-transparent"
     >
-      <div className="relative z-10 flex flex-col items-center text-center px-6 max-w-5xl w-full">
+      <motion.div
+        className="relative z-10 flex flex-col items-center text-center px-6 max-w-5xl w-full"
+        style={reduce ? undefined : { y: contentY, opacity: contentOpacity }}
+      >
         {/* Name: letters cascade in, lift on hover; "Sekhri" in the brand accent */}
         <h1
           className="font-display font-semibold leading-[0.95] tracking-tight text-text mb-7"
@@ -102,15 +120,25 @@ export default function Hero() {
           })}
         </h1>
 
-        <motion.p
+        {/* Tagline: characters rise in one by one, left to right, ease only */}
+        <p
           className="text-muted font-body mb-8"
           style={{ fontSize: "clamp(1rem, 3.5vw, 1.35rem)" }}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.35 }}
+          aria-label="I build machines that sense and steer themselves."
         >
-          Engineered beyond the horizon.
-        </motion.p>
+          {"I build machines that sense and steer themselves.".split("").map((c, i) => (
+            <motion.span
+              key={i}
+              aria-hidden
+              initial={reduce ? false : { opacity: 0, y: "0.55em" }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 0.55 + i * 0.014, ease: "easeOut" }}
+              style={{ display: "inline-block", whiteSpace: "pre" }}
+            >
+              {c}
+            </motion.span>
+          ))}
+        </p>
 
         <motion.div
           className="flex items-center justify-center gap-2 mb-10 text-muted font-body text-sm"
@@ -151,25 +179,25 @@ export default function Hero() {
         >
           <MagneticLink
             href="#projects"
-            className="px-6 py-2.5 bg-text text-bg text-sm font-body font-medium hover:opacity-75 transition-opacity rounded"
+            className="swap-trigger px-7 py-2.5 bg-text text-bg text-sm font-body font-medium rounded-full"
           >
-            See My Work
+            <SwapText text="See My Work" />
           </MagneticLink>
           <MagneticLink
             href="#about"
-            className="px-6 py-2.5 border border-border text-text text-sm font-body hover:border-text transition-colors rounded"
+            className="swap-trigger px-7 py-2.5 border border-border text-text text-sm font-body hover:border-accent transition-colors duration-300 rounded-full"
           >
-            About
+            <SwapText text="About" />
           </MagneticLink>
           <MagneticLink
             href="/Medhansh_Sekhri_Engineering_Resume.pdf"
             external
-            className="px-6 py-2.5 border border-border text-text text-sm font-body hover:border-text transition-colors rounded"
+            className="swap-trigger px-7 py-2.5 border border-border text-text text-sm font-body hover:border-accent transition-colors duration-300 rounded-full"
           >
-            Resume ↗
+            <SwapText text="Resume ↗" />
           </MagneticLink>
         </motion.div>
-      </div>
+      </motion.div>
     </section>
   );
 }
