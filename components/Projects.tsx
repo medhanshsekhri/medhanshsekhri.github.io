@@ -51,7 +51,7 @@ function TiltCard({
   }
 
   return (
-    <div style={{ perspective: 1100 }}>
+    <div style={{ perspective: 1100 }} className="h-full">
       <motion.button
         onClick={onClick}
         onMouseMove={reduce ? undefined : handleMove}
@@ -79,8 +79,6 @@ function TiltCard({
 interface Project {
   id: number;
   title: string;
-  meta: string;
-  year: string;
   imageSrc: string | null;
   rotate?: boolean;
   aspect?: number; // displayed width/height, so the card box hugs the image
@@ -91,42 +89,42 @@ interface Project {
 
 const PROJECTS: Project[] = [
   {
-    id: 2, title: "Autonomous Radar Scanner", meta: "Personal", year: "2024",
+    id: 2, title: "Autonomous Radar Scanner",
     imageSrc: "/frontview.jpg", aspect: 1.02,
     summary: "Real-time 180° object detection built from scratch in C++, the sensing foundation of an autonomous drone.",
     outcome: "Live visualisation · open-source on GitHub",
     tech: ["C++", "Arduino", "HC-SR04", "Processing"],
   },
   {
-    id: 1, title: "Flood-Resistant Station-Keeping House", meta: "UQ · ENGG1100", year: "2025",
+    id: 1, title: "Flood-Resistant Station-Keeping House",
     imageSrc: null, aspect: 1.6,
     summary: "Team-led, flood-resistant house that holds position in rising water, delivered on a $170 budget.",
     outcome: "Held position under simulated flood · under budget",
     tech: ["Arduino UNO R3", "MPU-6050", "L298N", "C++"],
   },
   {
-    id: 4, title: "CO2 Dragster", meta: "High School", year: "2023",
+    id: 4, title: "CO2 Dragster",
     imageSrc: "/dragster.jpg", aspect: 0.75,
     summary: "45g aerodynamic dragster designed in Fusion 360 and CNC-cut from balsa.",
     outcome: "0.49s over 1m · top 5 in year group",
     tech: ["Fusion 360", "Aerodynamics", "CAD"],
   },
   {
-    id: 5, title: "Model Rocket", meta: "High School", year: "2022",
+    id: 5, title: "Model Rocket",
     imageSrc: "/rocket_upright.jpg", aspect: 0.75,
     summary: "Model rocket simulated for stability in OpenRocket, then built and launched.",
     outcome: "97m apogee · clean recovery",
     tech: ["OpenRocket", "Flight Dynamics"],
   },
   {
-    id: 6, title: "Balsa Truss Tower", meta: "High School", year: "2022",
+    id: 6, title: "Balsa Truss Tower",
     imageSrc: "/tower_side.jpg", aspect: 2.17,
     summary: "Truss tower optimised to maximise load-to-weight ratio through geometry.",
     outcome: "Predictable failure at the designed weak point",
     tech: ["Structural Analysis", "Load Testing"],
   },
   {
-    id: 7, title: "Autonomous Warehouse Rover", meta: "High School", year: "2021",
+    id: 7, title: "Autonomous Warehouse Rover",
     imageSrc: "/rover_front.jpg", aspect: 2.17,
     summary: "EV3 rover that navigates a warehouse-style obstacle course with no human input.",
     outcome: "Completed the full course autonomously",
@@ -145,9 +143,8 @@ function TechPill({ label }: { label: string }) {
 function ProjectModalContent({ id }: { id: number }) {
   if (id === 1) return (
     <div>
-      <p className="text-muted text-xs uppercase tracking-widest font-body mb-2">University Project</p>
       <h2 className="font-display text-4xl md:text-5xl font-semibold text-text mb-3">Flood-Resistant Station-Keeping House</h2>
-      <p className="text-muted font-body text-base leading-relaxed mb-10">ENGG1100, The University of Queensland. Team leader across structural, electrical, and software subsystems within a $170 AUD budget.</p>
+      <p className="text-muted font-body text-base leading-relaxed mb-10">Team leader across structural, electrical, and software subsystems within a $170 AUD budget.</p>
       <div className="grid md:grid-cols-3 gap-6 mb-10">
         {[
           { heading: "Challenge", body: "Coordinating a team of four across disciplines with no prior experience. Keeping the project on budget while meeting all structural and electrical constraints." },
@@ -168,7 +165,6 @@ function ProjectModalContent({ id }: { id: number }) {
 
   if (id === 2) return (
     <div>
-      <p className="text-muted text-xs uppercase tracking-widest font-body mb-2">Personal Project</p>
       <h2 className="font-display text-4xl md:text-5xl font-semibold text-text mb-3">Autonomous Radar Scanner</h2>
       <p className="text-muted font-body text-base leading-relaxed mb-10">Real-time 180° object detection built from scratch. The sensing foundation of an autonomous drone.</p>
       <div className="grid md:grid-cols-3 gap-6 mb-10">
@@ -211,7 +207,6 @@ function ProjectModalContent({ id }: { id: number }) {
 
   if (id === 4) return (
     <div>
-      <p className="text-muted text-xs uppercase tracking-widest font-body mb-2">High School</p>
       <h2 className="font-display text-4xl md:text-5xl font-semibold text-text mb-3">CO2 Dragster</h2>
       <p className="text-muted font-body text-base leading-relaxed mb-10">45g, 0.49s over 1m. Designed in Fusion 360, CNC machined from balsa wood. Placed top 5 in year group.</p>
       <div className="grid md:grid-cols-3 gap-6 mb-10">
@@ -242,7 +237,6 @@ function ProjectModalContent({ id }: { id: number }) {
 
   if (id === 5) return (
     <div>
-      <p className="text-muted text-xs uppercase tracking-widest font-body mb-2">High School</p>
       <h2 className="font-display text-4xl md:text-5xl font-semibold text-text mb-3">Model Rocket</h2>
       <p className="text-muted font-body text-base leading-relaxed mb-10">97m apogee. B6-4 motor. Designed in OpenRocket, built and launched safely.</p>
       <div className="grid md:grid-cols-3 gap-6 mb-10">
@@ -269,7 +263,6 @@ function ProjectModalContent({ id }: { id: number }) {
 
   if (id === 6) return (
     <div>
-      <p className="text-muted text-xs uppercase tracking-widest font-body mb-2">High School</p>
       <h2 className="font-display text-4xl md:text-5xl font-semibold text-text mb-3">Balsa Truss Tower</h2>
       <p className="text-muted font-body text-base leading-relaxed mb-10">Structural efficiency competition. Designed to maximise load-to-weight ratio using truss geometry.</p>
       <div className="grid md:grid-cols-3 gap-6 mb-10">
@@ -294,7 +287,6 @@ function ProjectModalContent({ id }: { id: number }) {
 
   if (id === 7) return (
     <div>
-      <p className="text-muted text-xs uppercase tracking-widest font-body mb-2">High School</p>
       <h2 className="font-display text-4xl md:text-5xl font-semibold text-text mb-3">Autonomous Warehouse Rover</h2>
       <p className="text-muted font-body text-base leading-relaxed mb-10">LEGO Mindstorms EV3 rover programmed to navigate an obstacle course autonomously using sensor feedback.</p>
       <div className="grid md:grid-cols-3 gap-6 mb-10">
@@ -320,7 +312,7 @@ function ProjectModalContent({ id }: { id: number }) {
   return null;
 }
 
-function ProjectImage({ project }: { project: Project }) {
+function ProjectImage({ project, cover }: { project: Project; cover?: boolean }) {
   if (!project.imageSrc) {
     // No photos: a flat schematic tile listing the hardware, like a parts callout.
     return (
@@ -342,18 +334,20 @@ function ProjectImage({ project }: { project: Project }) {
     <img
       src={project.imageSrc}
       alt={project.title}
-      className="absolute inset-0 w-full h-full object-contain p-4"
+      className={`absolute inset-0 w-full h-full ${cover ? "object-cover" : "object-contain p-4"}`}
       draggable={false}
       onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
     />
   );
 }
 
-function CardMeta({ project }: { project: Project }) {
+/* Outcome line: the measured result, led by an accent arrow */
+function OutcomeLine({ text, className }: { text: string; className?: string }) {
   return (
-    <h3 className="font-display font-semibold text-text leading-snug text-xl">
-      {project.title}
-    </h3>
+    <p className={`font-body text-xs text-muted leading-relaxed ${className ?? ""}`}>
+      <span className="text-accent">→&nbsp;</span>
+      {text}
+    </p>
   );
 }
 
@@ -394,17 +388,30 @@ export default function Projects() {
         >
           <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[360px] overflow-hidden">
             <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.04]">
-              <ProjectImage project={featured} />
+              <ProjectImage project={featured} cover />
             </div>
           </div>
           <div className="p-7 md:p-10 flex flex-col justify-center">
-            <p className="text-muted text-xs uppercase tracking-widest font-body mb-3">Latest build</p>
-            <h3 className="font-display font-semibold text-text leading-tight text-3xl lg:text-4xl">
+            <p className="font-display italic text-accent mb-3" style={{ fontSize: "1.15rem", lineHeight: 1.1 }}>
+              Latest build
+            </p>
+            <h3 className="font-display font-semibold leading-tight text-3xl lg:text-4xl text-text transition-colors duration-300 group-hover:text-accent">
               {featured.title}
             </h3>
-            <span className="inline-flex items-center gap-2 text-sm font-body font-medium text-text mt-5">
-              Take a look
-              <ArrowRight size={15} className="transition-transform duration-300 group-hover:translate-x-1" />
+            <p className="font-body text-sm md:text-base text-muted leading-relaxed mt-4">
+              {featured.summary}
+            </p>
+            <OutcomeLine text={featured.outcome} className="mt-4" />
+            <div className="flex flex-wrap gap-2 mt-5">
+              {featured.tech.map((t) => (
+                <TechPill key={t} label={t} />
+              ))}
+            </div>
+            <span className="inline-flex items-center gap-2.5 text-sm font-body font-medium text-text mt-7">
+              Open case study
+              <span className="inline-flex items-center justify-center w-7 h-7 rounded-full border border-border transition-colors duration-300 group-hover:bg-text group-hover:border-text group-hover:text-bg">
+                <ArrowRight size={13} className="transition-transform duration-300 group-hover:translate-x-[1.5px]" />
+              </span>
             </span>
           </div>
         </TiltCard>
@@ -415,6 +422,7 @@ export default function Projects() {
         {rest.map((p, i) => (
           <motion.div
             key={p.id}
+            className="h-full"
             initial={{ opacity: 0, y: 28 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-60px" }}
@@ -423,15 +431,29 @@ export default function Projects() {
             <TiltCard
               onClick={() => setModalId(p.id)}
               ariaLabel={`Open ${p.title}`}
-              className={`group flex flex-col w-full text-left rounded-2xl overflow-hidden transition-colors focus:outline-none hover:border-white/40 ${GLASS_CLASS}`}
+              className={`group flex flex-col w-full h-full text-left rounded-2xl overflow-hidden transition-colors focus:outline-none hover:border-white/40 ${GLASS_CLASS}`}
             >
-              <div className="relative aspect-[4/3] overflow-hidden">
+              <div className="relative aspect-[4/3] overflow-hidden shrink-0">
                 <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.04]">
                   <ProjectImage project={p} />
                 </div>
               </div>
-              <div className="p-5 border-t border-[var(--glass-border)]">
-                <CardMeta project={p} />
+              <div className="p-5 border-t border-[var(--glass-border)] flex flex-col gap-2 flex-1">
+                <div className="flex items-start justify-between gap-3">
+                  <h3 className="font-display font-semibold leading-snug text-xl text-text transition-colors duration-300 group-hover:text-accent">
+                    {p.title}
+                  </h3>
+                  <span className="font-display italic text-sm text-accent pt-1">
+                    {String(i + 2).padStart(2, "0")}
+                  </span>
+                </div>
+                <div className="mt-auto flex items-end justify-between gap-3 pt-1.5">
+                  <OutcomeLine text={p.outcome} />
+                  <ArrowRight
+                    size={15}
+                    className="shrink-0 mb-0.5 text-muted opacity-0 -translate-x-1.5 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0 group-hover:text-accent"
+                  />
+                </div>
               </div>
             </TiltCard>
           </motion.div>

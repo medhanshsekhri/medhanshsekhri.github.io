@@ -10,8 +10,7 @@ type Photo = { src: string; alt: string; w: number; h: number };
 
 interface Project {
   title: string;
-  meta: string;        // context · year
-  description: string; // 2–3 lines, plain and factual
+  description: string; // 2-3 lines, plain and factual
   outcome: string;
   tools: string[];
   github?: string;
@@ -22,7 +21,6 @@ interface Project {
 const PROJECTS: Project[] = [
   {
     title: "Flood-Resistant Station-Keeping House",
-    meta: "UQ · ENGG1100 · 2025",
     description:
       "A model house that holds position in rising floodwater. I led a four-person team and owned the electronics and firmware: an Arduino UNO R3 reading an MPU-6050, driving DC motors through an L298N H-bridge on an XPS foam hull.",
     outcome: "Held position under simulated flood conditions, delivered under the $170 budget.",
@@ -31,7 +29,6 @@ const PROJECTS: Project[] = [
   },
   {
     title: "Autonomous Radar Scanner",
-    meta: "Personal · 2024",
     description:
       "A 180° ultrasonic radar built around an Arduino UNO: an HC-SR04 rangefinder on a servo sweeps the field of view while a Processing app renders detections in real time. All sweep and detection logic written from scratch in C++.",
     outcome: "Real-time object mapping across the full 180° sweep with a live radar display.",
@@ -47,17 +44,15 @@ const PROJECTS: Project[] = [
   },
   {
     title: "CO2 Dragster",
-    meta: "High School · 2023",
     description:
       "A 45 g CO2-powered dragster modelled in Fusion 360 and machined from balsa, shaped to minimise frontal area and drag within competition rules.",
-    outcome: "0.49 s over the 1 m track — top 5 in the year group.",
+    outcome: "0.49 s over the 1 m track, top 5 in the year group.",
     tools: ["Fusion 360", "Balsa", "CNC", "Aerodynamics"],
     video: { src: "/dragster_video.mp4", label: "Race run" },
     photos: [{ src: "/dragster.jpg", alt: "CO2 dragster", w: 1440, h: 1920 }],
   },
   {
     title: "Model Rocket",
-    meta: "High School · 2022",
     description:
       "Designed and simulated in OpenRocket to verify the stability margin before construction, then built, balanced, and launched on a B6-4 motor.",
     outcome: "97 m apogee, stable flight, clean parachute recovery.",
@@ -67,7 +62,6 @@ const PROJECTS: Project[] = [
   },
   {
     title: "Balsa Truss Tower",
-    meta: "High School · 2022",
     description:
       "A balsa truss tower built for a structural efficiency competition. Geometry chosen to maximise load-to-weight ratio with predictable load paths; joints pinned and glued with weight tracked through the build.",
     outcome: "Failed exactly at the designed weak point under class load testing.",
@@ -79,9 +73,8 @@ const PROJECTS: Project[] = [
   },
   {
     title: "Autonomous Warehouse Rover",
-    meta: "High School · 2021",
     description:
-      "A LEGO Mindstorms EV3 rover programmed to clear a warehouse-style obstacle course with no human input — ultrasonic sensor for obstacle detection, colour sensor for line following.",
+      "A LEGO Mindstorms EV3 rover programmed to clear a warehouse-style obstacle course with no human input: ultrasonic sensor for obstacle detection, colour sensor for line following.",
     outcome: "Completed the full course autonomously.",
     tools: ["LEGO EV3", "EV3-G", "Ultrasonic Sensor", "Colour Sensor"],
     photos: [
@@ -113,7 +106,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                 muted
                 playsInline
                 preload="metadata"
-                aria-label={`${project.title} — ${project.video.label}`}
+                aria-label={`${project.title}: ${project.video.label}`}
               />
             )}
             <div className={`grid gap-3 ${project.photos.length > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
@@ -133,8 +126,8 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
         )}
 
         <div className="p-6 md:p-8 flex flex-col justify-center">
-          <p className="text-muted text-xs uppercase tracking-[0.22em] font-body mb-3">
-            {String(index + 1).padStart(2, "0")} · {project.meta}
+          <p className="font-display italic text-accent text-base mb-3">
+            {String(index + 1).padStart(2, "0")}
           </p>
           <h2 className="font-display font-semibold text-text leading-tight text-2xl md:text-3xl mb-4">
             {project.title}
@@ -223,7 +216,7 @@ export default function ProjectsPage() {
           Projects<span className="text-accent">.</span>
         </h1>
         <p className="font-body text-muted text-base leading-relaxed max-w-xl mb-12">
-          Six builds across structures, vehicles, and autonomous systems — newest first.
+          Structures, vehicles, and autonomous systems.
         </p>
 
         <div className="flex flex-col gap-8">
