@@ -22,7 +22,7 @@ const PROJECTS: Project[] = [
   {
     title: "Flood-Resistant Station-Keeping House",
     description:
-      "A model house that holds position in rising floodwater. I led a four-person team and owned the electronics and firmware: an Arduino UNO R3 reading an MPU-6050, driving DC motors through an L298N H-bridge on an XPS foam hull.",
+      "A model house that holds position in rising floodwater. I led a seven-person team and owned the electronics and firmware: an Arduino UNO R3 reading an MPU-6050, driving DC motors through an L298N H-bridge on an XPS foam hull.",
     outcome: "Held position under simulated flood conditions, delivered under the $170 budget.",
     tools: ["Arduino UNO R3", "MPU-6050", "L298N", "C++", "XPS Foam", "Tinkercad"],
     photos: [],

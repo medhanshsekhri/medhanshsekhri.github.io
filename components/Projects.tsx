@@ -97,7 +97,7 @@ const PROJECTS: Project[] = [
   },
   {
     id: 1, title: "Flood-Resistant Station-Keeping House",
-    imageSrc: null, aspect: 1.6,
+    imageSrc: "/Frontview_FRH.jpg", aspect: 1.6,
     summary: "Team-led, flood-resistant house that holds position in rising water, delivered on a $170 budget.",
     outcome: "Held position under simulated flood · under budget",
     tech: ["Arduino UNO R3", "MPU-6050", "L298N", "C++"],
@@ -147,7 +147,7 @@ function ProjectModalContent({ id }: { id: number }) {
       <p className="text-muted font-body text-base leading-relaxed mb-10">Team leader across structural, electrical, and software subsystems within a $170 AUD budget.</p>
       <div className="grid md:grid-cols-3 gap-6 mb-10">
         {[
-          { heading: "Challenge", body: "Coordinating a team of four across disciplines with no prior experience. Keeping the project on budget while meeting all structural and electrical constraints." },
+          { heading: "Challenge", body: "Coordinating a team of seven across disciplines with no prior experience. Keeping the project on budget while meeting all structural and electrical constraints." },
           { heading: "What I Did", body: "Led the team, delegated tasks, and personally owned the electrical and firmware subsystems. Designed the motor control circuit and wrote the Arduino navigation code." },
           { heading: "Result", body: "A flood-resistant, station-keeping house that held position under simulated flood conditions. Delivered under budget with all subsystems functional." },
         ].map((col) => (
@@ -157,9 +157,19 @@ function ProjectModalContent({ id }: { id: number }) {
           </div>
         ))}
       </div>
-      <div className="flex flex-wrap gap-2 mb-8">
+      <div className="flex flex-wrap gap-2 mb-10">
         {["Arduino UNO", "C++", "L298N H-Bridge", "12V DC Motors", "3D Printing", "Tinkercad", "XPS Foam", "Corflute"].map((t) => <TechPill key={t} label={t} />)}
       </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
+        {["Frontview_FRH.jpg","Backview_FRH.jpg","Topview_FRH.jpg"].map((img) => (
+          <div key={img} className="aspect-square rounded-lg overflow-hidden border border-border">
+            <img src={`/${img}`} alt={img.replace(".jpg","").replace(/_/g," ")} className="w-full h-full object-cover" onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
+          </div>
+        ))}
+      </div>
+      <a href="https://github.com/medhanshsekhri/FloodResistantHouse" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-2.5 border border-text text-text text-sm font-body hover:bg-text hover:text-bg transition-colors rounded">
+        View on GitHub ↗
+      </a>
     </div>
   );
 

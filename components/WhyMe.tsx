@@ -8,7 +8,7 @@ import { LineReveal } from "./Reveal";
 const PARAGRAPHS = [
   <>I&apos;m a first-year engineering student at the University of Queensland (BEng(Hons) + MEng), headed for mechanical and aerospace engineering.</>,
   <>Most of what I know about embedded systems came from outside the classroom. In my first few weeks of university I taught myself C++ and built an ultrasonic radar scanner around an Arduino: sweep logic, servo control, and a live visualisation in Processing. The code is on <a href="https://github.com/medhanshsekhri/Arduino-Radar-Scanner" target="_blank" rel="noopener noreferrer" className="text-text font-semibold underline underline-offset-4 decoration-border hover:decoration-accent transition-colors">GitHub</a>.</>,
-  <>For ENGG1100 I led a team of four building a model house that has to hold its position in rising floodwater. My job was the motor-control circuit and the firmware, and the whole build came in under its $170 budget.</>,
+  <>For ENGG1100 I led a team of seven building a model house that has to hold its position in rising floodwater. My job was the motor-control circuit and the firmware, and the whole build came in under its $170 budget.</>,
   <>Outside uni I&apos;m a certified remote pilot (Certificate III in Aviation) through the Australian Air Force Cadets, and I&apos;ve flown a Diamond DA40 at RAAF Amberley. Current project: an obstacle-avoiding drone built on the radar work.</>,
 ];
 
