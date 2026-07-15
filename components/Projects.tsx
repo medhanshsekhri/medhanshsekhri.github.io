@@ -167,6 +167,11 @@ function ProjectModalContent({ id }: { id: number }) {
           </div>
         ))}
       </div>
+      <div className="rounded-lg overflow-hidden mb-8 border border-border">
+        <video controls muted playsInline style={{width:"100%",height:"auto",maxHeight:"70vh",objectFit:"contain",background:"#000",display:"block"}}>
+          <source src="/Video_FRH.mp4" type="video/mp4" />
+        </video>
+      </div>
       <a href="https://github.com/medhanshsekhri/FloodResistantHouse" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-2.5 border border-text text-text text-sm font-body hover:bg-text hover:text-bg transition-colors rounded">
         View on GitHub ↗
       </a>
