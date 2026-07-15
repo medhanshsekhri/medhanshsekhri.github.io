@@ -1,4 +1,4 @@
 :HL["/_next/static/chunks/0yrb0~~-ha99-.css","style"]
 :HL["https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap","style"]
 :HL["https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&display=swap","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"g7w3EiFe9NFasJL4SsDsu"}
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"/_not-found","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"D_kgNg_AhNlrPO7jm6BwU"}
