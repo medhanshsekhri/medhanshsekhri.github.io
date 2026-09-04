@@ -1,0 +1,114 @@
+{
+  "/Backview_FRH.webp": {
+    "w": 591,
+    "w2x": 1182
+  },
+  "/Frontview_FRH.webp": {
+    "w": 896,
+    "w2x": 1792
+  },
+  "/Topview_FRH.webp": {
+    "w": 591,
+    "w2x": 1182
+  },
+  "/UQ-300x300.webp": {
+    "w": 34,
+    "w2x": 68
+  },
+  "/UQ.webp": {
+    "w": 233,
+    "w2x": 466
+  },
+  "/biology.webp": {
+    "w": 233,
+    "w2x": 466
+  },
+  "/cadets.webp": {
+    "w": 233,
+    "w2x": 466
+  },
+  "/circuit_image.webp": {
+    "w": 341,
+    "w2x": 682
+  },
+  "/diamondda40.webp": {
+    "w": 233,
+    "w2x": 466
+  },
+  "/dragster.webp": {
+    "w": 695,
+    "w2x": 1390
+  },
+  "/frontview.webp": {
+    "w": 591,
+    "w2x": 1050
+  },
+  "/leapfrog_logo.webp": {
+    "w": 128,
+    "w2x": 128
+  },
+  "/leapfrog_screenshot.webp": {
+    "w": 880,
+    "w2x": 1760
+  },
+  "/metrix_screenshot.webp": {
+    "w": 880,
+    "w2x": 1760
+  },
+  "/networking.webp": {
+    "w": 233,
+    "w2x": 466
+  },
+  "/news.webp": {
+    "w": 233,
+    "w2x": 466
+  },
+  "/news2.webp": {
+    "w": 233,
+    "w2x": 466
+  },
+  "/nightlight.webp": {
+    "w": 233,
+    "w2x": 466
+  },
+  "/pose.webp": {
+    "w": 233,
+    "w2x": 466
+  },
+  "/rocket.webp": {
+    "w": 816,
+    "w2x": 1632
+  },
+  "/rocket_upright.webp": {
+    "w": 695,
+    "w2x": 1390
+  },
+  "/rover_front.webp": {
+    "w": 591,
+    "w2x": 887
+  },
+  "/rover_side.webp": {
+    "w": 341,
+    "w2x": 682
+  },
+  "/sideview.webp": {
+    "w": 341,
+    "w2x": 682
+  },
+  "/topview.webp": {
+    "w": 341,
+    "w2x": 682
+  },
+  "/topview2.webp": {
+    "w": 290,
+    "w2x": 580
+  },
+  "/tower_side.webp": {
+    "w": 591,
+    "w2x": 885
+  },
+  "/tower_top.webp": {
+    "w": 402,
+    "w2x": 804
+  }
+}

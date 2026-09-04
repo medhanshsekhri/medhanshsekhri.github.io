@@ -1,9 +1,9 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import { motion, useInView } from "framer-motion";
 import { LineReveal } from "./Reveal";
+import { responsiveImage } from "@/lib/image";
 
 const PARAGRAPHS = [
   <>I&apos;m a first-year engineering student at the University of Queensland (BEng(Hons) + MEng), headed for mechanical and aerospace engineering.</>,
@@ -13,18 +13,18 @@ const PARAGRAPHS = [
 ];
 
 const PHOTOS = [
-  { src: "/diamondda40.jpg", alt: "Flying a Diamond DA40 at RAAF Amberley" },
-  { src: "/networking.jpg",  alt: "International Science School 2025 gala" },
-  { src: "/news.jpg",        alt: "WIN News interview" },
-  { src: "/UQ.jpg",          alt: "University of Queensland" },
-  { src: "/cadets.jpg",      alt: "Airforce Cadets Bivouac" },
-  { src: "/pose.jpg",        alt: "Arduino project" },
-  { src: "/news2.jpg",       alt: "Together for Humanity Youth Summit" },
-  { src: "/biology.jpg",     alt: "Live fluke analysis, University of Sydney" },
-  { src: "/nightlight.jpg",  alt: "Custom night light build" },
+  { src: "/diamondda40.webp", alt: "Flying a Diamond DA40 at RAAF Amberley" },
+  { src: "/networking.webp",  alt: "International Science School 2025 gala" },
+  { src: "/news.webp",        alt: "WIN News interview" },
+  { src: "/UQ.webp",          alt: "University of Queensland" },
+  { src: "/cadets.webp",      alt: "Airforce Cadets Bivouac" },
+  { src: "/pose.webp",        alt: "Arduino project" },
+  { src: "/news2.webp",       alt: "Together for Humanity Youth Summit" },
+  { src: "/biology.webp",     alt: "Live fluke analysis, University of Sydney" },
+  { src: "/nightlight.webp",  alt: "Custom night light build" },
 ];
 
-function PhotoTile({ src, alt, eager, index }: { src: string; alt: string; eager: boolean; index: number }) {
+function PhotoTile({ src, alt, index }: { src: string; alt: string; index: number }) {
   return (
     <motion.div
       className="group relative aspect-square overflow-hidden rounded-md border border-border bg-elevated"
@@ -35,13 +35,15 @@ function PhotoTile({ src, alt, eager, index }: { src: string; alt: string; eager
     >
       {/* Shimmer sits behind; the loaded photo paints over it. */}
       <div className="absolute inset-0 shimmer" aria-hidden />
-      <Image
-        src={src}
+      {/* Plain <img>: next/image emits no srcset under images.unoptimized,
+          and these tiles are where the 1x/2x split pays off most. The classes
+          reproduce next/image's `fill` box exactly. */}
+      <img
+        {...responsiveImage(src, "(max-width: 768px) 30vw, 153px")}
         alt={alt}
-        fill
-        sizes="(max-width: 768px) 30vw, 170px"
-        preload={eager}
-        className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.06]"
+        loading="lazy"
+        decoding="async"
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.06]"
       />
       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/45 transition-colors duration-300 flex items-end p-2">
         <p className="text-white text-[10px] leading-tight font-body opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
@@ -96,7 +98,7 @@ export default function WhyMe() {
           {/* Photo grid: tidy 3x3 of uniform tiles, each settling in on its own beat */}
           <div className="grid grid-cols-3 gap-2.5">
             {PHOTOS.map((photo, i) => (
-              <PhotoTile key={photo.src} src={photo.src} alt={photo.alt} eager={i < 3} index={i} />
+              <PhotoTile key={photo.src} src={photo.src} alt={photo.alt} index={i} />
             ))}
           </div>
         </div>

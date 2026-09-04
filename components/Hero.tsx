@@ -12,6 +12,7 @@ import {
 } from "framer-motion";
 import SwapText from "./SwapText";
 import F22Flyover from "./F22Flyover";
+import { responsiveImage } from "@/lib/image";
 
 const FIRST = "Medhansh";
 const LAST = " Sekhri.";
@@ -271,7 +272,8 @@ export default function Hero() {
             }}
           >
             <img
-              src="/UQ-300x300.png"
+              loading="eager"
+              {...responsiveImage("/UQ-300x300.webp", "34px")}
               alt="University of Queensland crest"
               style={{ width: "100%", height: "100%", objectFit: "contain" }}
               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}

@@ -11,7 +11,9 @@ import {
 } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Modal from "./Modal";
+import ZoomableImages from "./Lightbox";
 import { LineReveal } from "./Reveal";
+import { responsiveImage } from "@/lib/image";
 
 // Frosted-glass surface (CSS approximation, not Apple Liquid Glass).
 // Styling lives in the .glass-panel class in globals.css.
@@ -90,42 +92,42 @@ interface Project {
 const PROJECTS: Project[] = [
   {
     id: 2, title: "Autonomous Radar Scanner",
-    imageSrc: "/frontview.jpg", aspect: 1.02,
+    imageSrc: "/frontview.webp", aspect: 1.02,
     summary: "Real-time 180° object detection built from scratch in C++, the sensing foundation of an autonomous drone.",
     outcome: "Live visualisation · open-source on GitHub",
     tech: ["C++", "Arduino", "HC-SR04", "Processing"],
   },
   {
     id: 1, title: "Flood-Resistant Station-Keeping House",
-    imageSrc: "/Frontview_FRH.jpg", aspect: 1.6,
+    imageSrc: "/Frontview_FRH.webp", aspect: 1.6,
     summary: "Team-led, flood-resistant house that holds position in rising water, delivered on a $170 budget.",
     outcome: "Held position under simulated flood · under budget",
     tech: ["Arduino UNO R3", "MPU-6050", "L298N", "C++"],
   },
   {
     id: 4, title: "CO2 Dragster",
-    imageSrc: "/dragster.jpg", aspect: 0.75,
+    imageSrc: "/dragster.webp", aspect: 0.75,
     summary: "45g aerodynamic dragster designed in Fusion 360 and CNC-cut from balsa.",
     outcome: "0.49s over 1m · top 5 in year group",
     tech: ["Fusion 360", "Aerodynamics", "CAD"],
   },
   {
     id: 5, title: "Model Rocket",
-    imageSrc: "/rocket_upright.jpg", aspect: 0.75,
+    imageSrc: "/rocket_upright.webp", aspect: 0.75,
     summary: "Model rocket simulated for stability in OpenRocket, then built and launched.",
     outcome: "97m apogee · clean recovery",
     tech: ["OpenRocket", "Flight Dynamics"],
   },
   {
     id: 6, title: "Balsa Truss Tower",
-    imageSrc: "/tower_side.jpg", aspect: 2.17,
+    imageSrc: "/tower_side.webp", aspect: 2.17,
     summary: "Truss tower optimised to maximise load-to-weight ratio through geometry.",
     outcome: "Predictable failure at the designed weak point",
     tech: ["Structural Analysis", "Load Testing"],
   },
   {
     id: 7, title: "Autonomous Warehouse Rover",
-    imageSrc: "/rover_front.jpg", aspect: 2.17,
+    imageSrc: "/rover_front.webp", aspect: 2.17,
     summary: "EV3 rover that navigates a warehouse-style obstacle course with no human input.",
     outcome: "Completed the full course autonomously",
     tech: ["LEGO EV3", "Ultrasonic", "Colour Sensor"],
@@ -161,14 +163,14 @@ function ProjectModalContent({ id }: { id: number }) {
         {["Arduino UNO", "C++", "L298N H-Bridge", "12V DC Motors", "3D Printing", "Tinkercad", "XPS Foam", "Corflute"].map((t) => <TechPill key={t} label={t} />)}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
-        {["Frontview_FRH.jpg","Backview_FRH.jpg","Topview_FRH.jpg"].map((img) => (
+        {["Frontview_FRH.webp","Backview_FRH.webp","Topview_FRH.webp"].map((img) => (
           <div key={img} className="aspect-square rounded-lg overflow-hidden border border-border">
-            <img src={`/${img}`} alt={img.replace(".jpg","").replace(/_/g," ")} className="w-full h-full object-cover" onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
+            <img loading="lazy" {...responsiveImage(`/${img}`, "(max-width: 639px) 100vw, 264px")} alt={img.replace(".webp","").replace(/_/g," ")} className="w-full h-full object-cover" onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
           </div>
         ))}
       </div>
       <div className="rounded-lg overflow-hidden mb-8 border border-border">
-        <video controls muted playsInline style={{width:"100%",height:"auto",maxHeight:"70vh",objectFit:"contain",background:"#000",display:"block"}}>
+        <video controls muted playsInline preload="none" poster="/Frontview_FRH.webp" style={{width:"100%",height:"auto",maxHeight:"70vh",objectFit:"contain",background:"#000",display:"block"}}>
           <source src="/Video_FRH.mp4" type="video/mp4" />
         </video>
       </div>
@@ -198,20 +200,20 @@ function ProjectModalContent({ id }: { id: number }) {
         {["Arduino UNO", "C++", "HC-SR04", "SG90 Servo", "Processing", "Embedded Systems"].map((t) => <TechPill key={t} label={t} />)}
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-        {["frontview.jpg","topview.jpg","sideview.jpg","topview2.jpg"].map((img) => (
+        {["frontview.webp","topview.webp","sideview.webp","topview2.webp"].map((img) => (
           <div key={img} className="aspect-square rounded-lg overflow-hidden border border-border">
-            <img src={`/${img}`} alt={img.replace(".jpg","").replace(/_/g," ")} className="w-full h-full object-cover" onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
+            <img loading="lazy" {...responsiveImage(`/${img}`, "(max-width: 639px) 100vw, 264px")} alt={img.replace(".webp","").replace(/_/g," ")} className="w-full h-full object-cover" onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
           </div>
         ))}
       </div>
       <div className="mb-10">
         <div className="rounded-lg overflow-hidden mb-4 border border-border">
-          <video controls muted playsInline style={{width:"100%",height:"auto",maxHeight:"70vh",objectFit:"contain",background:"#000",display:"block"}}>
+          <video controls muted playsInline preload="none" poster="/frontview.webp" style={{width:"100%",height:"auto",maxHeight:"70vh",objectFit:"contain",background:"#000",display:"block"}}>
             <source src="/video1.mp4" type="video/mp4" />
           </video>
         </div>
         <div className="rounded-lg overflow-hidden border border-border flex items-center justify-center p-4" style={{height:200}}>
-          <img src="/circuit_image.png" alt="Circuit diagram" className="w-full h-full object-contain" onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
+          <img loading="lazy" {...responsiveImage("/circuit_image.webp", "203px")} alt="Circuit diagram" className="w-full h-full object-contain" onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
         </div>
       </div>
       <a href="https://github.com/medhanshsekhri/Arduino-Radar-Scanner" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-5 py-2.5 border border-text text-text text-sm font-body hover:bg-text hover:text-bg transition-colors rounded">
@@ -239,12 +241,12 @@ function ProjectModalContent({ id }: { id: number }) {
       <div className="flex flex-wrap gap-2 mb-10">{["Fusion 360","Balsa Wood","Aerodynamics","CAD"].map((t) => <TechPill key={t} label={t} />)}</div>
       <div className="mb-8">
         <div className="rounded-lg overflow-hidden mb-3 border border-border">
-          <video controls muted playsInline style={{width:"100%",height:"auto",maxHeight:"70vh",objectFit:"contain",background:"#000",display:"block"}}>
+          <video controls muted playsInline preload="none" poster="/dragster.webp" style={{width:"100%",height:"auto",maxHeight:"70vh",objectFit:"contain",background:"#000",display:"block"}}>
             <source src="/dragster_video.mp4" type="video/mp4" />
           </video>
         </div>
         <div className="rounded-lg overflow-hidden border border-border" style={{height:200,background:"var(--dragster-img-bg,#f5f5f5)",padding:16,display:"flex",alignItems:"center",justifyContent:"center"}}>
-          <img src="/dragster.jpg" alt="CO2 Dragster" style={{maxWidth:"100%",maxHeight:"100%",objectFit:"contain"}} onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
+          <img loading="lazy" {...responsiveImage("/dragster.webp", "150px")} alt="CO2 Dragster" style={{maxWidth:"100%",maxHeight:"100%",objectFit:"contain"}} onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
         </div>
       </div>
     </div>
@@ -268,10 +270,10 @@ function ProjectModalContent({ id }: { id: number }) {
       </div>
       <div className="flex flex-wrap gap-2 mb-10">{["OpenRocket","B6-4 Motor","Flight Dynamics","Recovery Systems"].map((t) => <TechPill key={t} label={t} />)}</div>
       <div className="mb-8">
-        <video controls muted playsInline style={{width:"100%",height:"auto",maxHeight:"70vh",objectFit:"contain",borderRadius:8,marginBottom:8,background:"#000",display:"block"}}>
+        <video controls muted playsInline preload="none" poster="/rocket.webp" style={{width:"100%",height:"auto",maxHeight:"70vh",objectFit:"contain",borderRadius:8,marginBottom:8,background:"#000",display:"block"}}>
           <source src="/rocket_video.mp4" type="video/mp4" />
         </video>
-        <img src="/rocket.jpg" alt="Model Rocket" style={{width:"100%",borderRadius:8}} onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
+        <img loading="lazy" {...responsiveImage("/rocket.webp", "(max-width: 767px) 100vw, 816px")} alt="Model Rocket" style={{width:"100%",borderRadius:8}} onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
       </div>
     </div>
   );
@@ -294,8 +296,8 @@ function ProjectModalContent({ id }: { id: number }) {
       </div>
       <div className="flex flex-wrap gap-2 mb-10">{["Truss Design","Balsa Wood","Structural Analysis","Load Testing"].map((t) => <TechPill key={t} label={t} />)}</div>
       <div style={{display:"flex",gap:12}}>
-        <img src="/tower_top.jpg" alt="Tower top" style={{flex:1,height:260,objectFit:"cover",borderRadius:8,minWidth:0}} onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
-        <img src="/tower_side.jpg" alt="Tower side" style={{flex:1,height:260,objectFit:"cover",borderRadius:8,minWidth:0}} onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
+        <img loading="lazy" {...responsiveImage("/tower_top.webp", "402px")} alt="Tower top" style={{flex:1,height:260,objectFit:"cover",borderRadius:8,minWidth:0}} onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
+        <img loading="lazy" {...responsiveImage("/tower_side.webp", "402px")} alt="Tower side" style={{flex:1,height:260,objectFit:"cover",borderRadius:8,minWidth:0}} onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
       </div>
     </div>
   );
@@ -318,14 +320,18 @@ function ProjectModalContent({ id }: { id: number }) {
       </div>
       <div className="flex flex-wrap gap-2 mb-10">{["LEGO Mindstorms EV3","EV3-G","Ultrasonic Sensor","Colour Sensor","Autonomous Navigation"].map((t) => <TechPill key={t} label={t} />)}</div>
       <div style={{display:"flex",gap:12,justifyContent:"center"}}>
-        <img src="/rover_front.jpg" alt="Rover front" style={{maxHeight:200,width:"auto",objectFit:"contain",borderRadius:8}} onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
-        <img src="/rover_side.jpg" alt="Rover side" style={{maxHeight:200,width:"auto",objectFit:"contain",borderRadius:8}} onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
+        <img loading="lazy" {...responsiveImage("/rover_front.webp", "92px")} alt="Rover front" style={{maxHeight:200,width:"auto",objectFit:"contain",borderRadius:8}} onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
+        <img loading="lazy" {...responsiveImage("/rover_side.webp", "92px")} alt="Rover side" style={{maxHeight:200,width:"auto",objectFit:"contain",borderRadius:8}} onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
       </div>
     </div>
   );
 
   return null;
 }
+
+// Slot widths for the card images, used to pick between the 1x and 2x files.
+const FEATURED_SIZES = "(max-width: 767px) 100vw, 50vw";
+const CARD_SIZES = "(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw";
 
 function ProjectImage({ project, cover }: { project: Project; cover?: boolean }) {
   if (!project.imageSrc) {
@@ -346,8 +352,8 @@ function ProjectImage({ project, cover }: { project: Project; cover?: boolean })
     );
   }
   return (
-    <img
-      src={project.imageSrc}
+    <img loading="lazy"
+      {...responsiveImage(project.imageSrc, cover ? FEATURED_SIZES : CARD_SIZES)}
       alt={project.title}
       className={`absolute inset-0 w-full h-full ${cover ? "object-cover" : "object-contain p-4"}`}
       draggable={false}
@@ -475,8 +481,12 @@ export default function Projects() {
         ))}
       </div>
 
-      <Modal isOpen={modalId !== null} onClose={() => setModalId(null)}>
-        {modalId !== null && <ProjectModalContent id={modalId} />}
+      <Modal isOpen={modalId !== null} onClose={() => setModalId(null)} label="Project case study">
+        {modalId !== null && (
+          <ZoomableImages>
+            <ProjectModalContent id={modalId} />
+          </ZoomableImages>
+        )}
       </Modal>
     </section>
   );

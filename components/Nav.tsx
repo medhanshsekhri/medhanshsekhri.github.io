@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useSyncExternalStore, useCallback } from "react";
 import {
   motion,
   AnimatePresence,
@@ -9,6 +9,7 @@ import {
 } from "framer-motion";
 import { Sun, Moon, Menu, X } from "lucide-react";
 import SwapText from "./SwapText";
+import { useScrollLock } from "@/lib/overlay";
 
 const NAV_LINKS = [
   { label: "Projects", href: "/projects" },
@@ -16,8 +17,24 @@ const NAV_LINKS = [
   { label: "Contact", href: "#contact" },
 ];
 
+/** Theme lives on <html>, outside React; observe it rather than mirror it. */
+function subscribeToTheme(onChange: () => void) {
+  const observer = new MutationObserver(onChange);
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
+  return () => observer.disconnect();
+}
+const getThemeSnapshot = () => document.documentElement.classList.contains("dark");
+const getThemeServerSnapshot = () => false;
+
 export default function Nav() {
-  const [isDark, setIsDark] = useState(false);
+  const isDark = useSyncExternalStore(
+    subscribeToTheme,
+    getThemeSnapshot,
+    getThemeServerSnapshot
+  );
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
@@ -25,22 +42,15 @@ export default function Nav() {
   const { scrollY } = useScroll();
   useMotionValueEvent(scrollY, "change", (y) => setScrolled(y > 20));
 
-  useEffect(() => {
-    setIsDark(document.documentElement.classList.contains("dark"));
-  }, []);
+  // Shared counter: the nav menu no longer unlocks scroll out from under an
+  // open modal or lightbox.
+  useScrollLock(menuOpen);
 
-  // Lock body scroll when menu open
-  useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [menuOpen]);
-
-  const toggleDark = () => {
-    const next = !isDark;
-    setIsDark(next);
+  const toggleDark = useCallback(() => {
+    const next = !document.documentElement.classList.contains("dark");
     document.documentElement.classList.toggle("dark", next);
     localStorage.setItem("theme", next ? "dark" : "light");
-  };
+  }, []);
 
   return (
     <>
