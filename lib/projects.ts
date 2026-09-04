@@ -16,6 +16,12 @@
 export interface ProjectPhoto {
   src: string;
   alt: string;
+  /**
+   * How the photo sits in its fixed-aspect box. Default is `cover`.
+   * `contain` is for sources that must not be cropped - diagrams, and
+   * portrait shots far taller than the 4:5 grid box.
+   */
+  fit?: "cover" | "contain";
 }
 
 export interface ProjectVideo {
@@ -86,7 +92,11 @@ export const PROJECTS: Project[] = [
         src: "/topview2.webp",
         alt: "Radar scanner wiring: the HC-SR04 sensor and Arduino held beside the breadboard",
       },
-      { src: "/circuit_image.webp", alt: "Radar circuit diagram" },
+      {
+        src: "/circuit_image.webp",
+        alt: "Radar circuit diagram",
+        fit: "contain",
+      },
     ],
   },
   {

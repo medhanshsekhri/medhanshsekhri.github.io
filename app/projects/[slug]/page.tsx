@@ -48,7 +48,20 @@ export default async function ProjectPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const project = getProject(slug);
-  if (!project) notFound();
-  return <CaseStudy project={project} />;
+  const index = PROJECTS.findIndex((p) => p.slug === slug);
+  if (index === -1) notFound();
+
+  // Neighbours in PROJECTS order, wrapping at both ends so neither the first
+  // nor the last case study is a dead end.
+  const { length } = PROJECTS;
+  const prev = PROJECTS[(index - 1 + length) % length];
+  const next = PROJECTS[(index + 1) % length];
+
+  return (
+    <CaseStudy
+      project={PROJECTS[index]}
+      prev={{ slug: prev.slug, title: prev.title }}
+      next={{ slug: next.slug, title: next.title }}
+    />
+  );
 }

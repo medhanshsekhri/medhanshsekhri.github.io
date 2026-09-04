@@ -90,7 +90,13 @@ function TechPill({ label }: { label: string }) {
 const FEATURED_SIZES = "(max-width: 767px) 100vw, 50vw";
 const CARD_SIZES = "(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 33vw";
 
-function ProjectImage({ project, cover }: { project: Project; cover?: boolean }) {
+function ProjectImage({
+  project,
+  featured,
+}: {
+  project: Project;
+  featured?: boolean;
+}) {
   const photo = project.photos[0];
   if (!photo) {
     // No photos: a flat schematic tile listing the hardware, like a parts callout.
@@ -110,10 +116,13 @@ function ProjectImage({ project, cover }: { project: Project; cover?: boolean })
     );
   }
   return (
+    // One treatment for all six cards: cover in a fixed-aspect box, so the
+    // source aspect (0.46 to 2.17 across the set) never changes how a card
+    // reads.
     <img loading="lazy"
-      {...responsiveImage(photo.src, cover ? FEATURED_SIZES : CARD_SIZES)}
+      {...responsiveImage(photo.src, featured ? FEATURED_SIZES : CARD_SIZES)}
       alt={photo.alt}
-      className={`absolute inset-0 w-full h-full ${cover ? "object-cover" : "object-contain p-4"}`}
+      className="absolute inset-0 w-full h-full object-cover"
       draggable={false}
       onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
     />
@@ -166,7 +175,7 @@ export default function Projects() {
         >
           <div className="relative aspect-[16/10] md:aspect-auto md:min-h-[360px] overflow-hidden">
             <div className="absolute inset-0 transition-transform duration-700 ease-out group-hover:scale-[1.04]">
-              <ProjectImage project={featured} cover />
+              <ProjectImage project={featured} featured />
             </div>
           </div>
           <div className="p-7 md:p-10 flex flex-col justify-center">
