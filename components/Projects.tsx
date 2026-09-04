@@ -23,6 +23,11 @@ const TILT_SPRING = { stiffness: 180, damping: 18, mass: 0.4 };
 
 // Pointer-driven 3D tilt. Uses motion values (not state) so it never
 // re-renders the tree on mouse move. Collapses to static under reduced motion.
+//
+// The card itself is a <div>, not an <a>: the card-wide link is an empty
+// overlay anchor stretched across it. That keeps secondary links (GitHub) as
+// siblings of the card link rather than descendants - an <a> inside an <a> is
+// invalid HTML and React will not hydrate it as written.
 function TiltCard({
   href,
   ariaLabel,
@@ -42,7 +47,7 @@ function TiltCard({
   const rotateX = useSpring(useTransform(py, [-0.5, 0.5], [7, -7]), TILT_SPRING);
   const rotateY = useSpring(useTransform(px, [-0.5, 0.5], [-7, 7]), TILT_SPRING);
 
-  function handleMove(e: React.MouseEvent<HTMLAnchorElement>) {
+  function handleMove(e: React.MouseEvent<HTMLDivElement>) {
     const r = e.currentTarget.getBoundingClientRect();
     px.set((e.clientX - r.left) / r.width - 0.5);
     py.set((e.clientY - r.top) / r.height - 0.5);
@@ -54,7 +59,7 @@ function TiltCard({
 
   return (
     <div style={{ perspective: 1100 }} className="h-full">
-      <motion.a
+      <motion.div
         onMouseMove={reduce ? undefined : handleMove}
         onMouseLeave={reset}
         whileTap={{ scale: 0.985 }}
@@ -64,17 +69,40 @@ function TiltCard({
           ...(reduce ? {} : { rotateX, rotateY }),
         }}
         className={className}
-        aria-label={ariaLabel}
-        href={href}
       >
         {children}
+        {/* The card-wide link. Sits above the card content but below anything
+            marked LINK_ABOVE_CARD, so those stay clickable. */}
+        <Link
+          href={href}
+          aria-label={ariaLabel}
+          className="absolute inset-0 z-[5] rounded-2xl"
+        />
         {/* HUD targeting brackets: draw in on hover, like a viewfinder lock */}
         <span className="hud-corner hud-corner--tl" aria-hidden />
         <span className="hud-corner hud-corner--tr" aria-hidden />
         <span className="hud-corner hud-corner--bl" aria-hidden />
         <span className="hud-corner hud-corner--br" aria-hidden />
-      </motion.a>
+      </motion.div>
     </div>
+  );
+}
+
+/** Stacking context for anything that must stay clickable over the card link. */
+const LINK_ABOVE_CARD = "relative z-[6]";
+
+/* Secondary link on a card. A sibling of the card link, never a descendant. */
+function GithubLink({ href, label }: { href: string; label: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`${label} on GitHub`}
+      className={`${LINK_ABOVE_CARD} inline-flex items-center self-start text-xs font-body text-muted hover:text-accent transition-colors duration-300`}
+    >
+      GitHub &#8599;
+    </a>
   );
 }
 
@@ -194,12 +222,17 @@ export default function Projects() {
                 <TechPill key={t} label={t} />
               ))}
             </div>
-            <span className="inline-flex items-center gap-2.5 text-sm font-body font-medium text-text mt-7">
-              Open case study
-              <span className="inline-flex items-center justify-center w-7 h-7 rounded-full border border-border transition-colors duration-300 group-hover:bg-text group-hover:border-text group-hover:text-bg">
-                <ArrowRight size={13} className="transition-transform duration-300 group-hover:translate-x-[1.5px]" />
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-7">
+              <span className="inline-flex items-center gap-2.5 text-sm font-body font-medium text-text">
+                Open case study
+                <span className="inline-flex items-center justify-center w-7 h-7 rounded-full border border-border transition-colors duration-300 group-hover:bg-text group-hover:border-text group-hover:text-bg">
+                  <ArrowRight size={13} className="transition-transform duration-300 group-hover:translate-x-[1.5px]" />
+                </span>
               </span>
-            </span>
+              {featured.github && (
+                <GithubLink href={featured.github} label={featured.title} />
+              )}
+            </div>
           </div>
         </TiltCard>
       </motion.div>
@@ -234,6 +267,7 @@ export default function Projects() {
                     {String(i + 2).padStart(2, "0")}
                   </span>
                 </div>
+                {p.github && <GithubLink href={p.github} label={p.title} />}
                 <div className="mt-auto flex items-end justify-between gap-3 pt-1.5">
                   <OutcomeLine text={p.outcome} />
                   <ArrowRight

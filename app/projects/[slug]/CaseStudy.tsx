@@ -49,7 +49,7 @@ export default function CaseStudy({
     <div className="relative z-10 min-h-screen flex flex-col">
       <ProjectsChrome backHref="/projects/" backLabel="Projects" />
 
-      <main className="flex-1 w-full max-w-4xl mx-auto px-5 md:px-8 py-14 md:py-20">
+      <main id="main-content" className="flex-1 w-full max-w-4xl mx-auto px-5 md:px-8 py-14 md:py-20">
         <h1
           className="font-display font-semibold text-text mb-3"
           style={{ fontSize: "clamp(2.5rem, 5vw, 4rem)", lineHeight: 1.05 }}

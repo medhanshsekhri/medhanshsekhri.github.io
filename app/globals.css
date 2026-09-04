@@ -145,8 +145,10 @@ main > * {
 .hud-corner--tr { top: 10px;    right: 10px; border-left: none;  border-bottom: none; transform: translate(-6px, 6px); }
 .hud-corner--bl { bottom: 10px; left: 10px;  border-right: none; border-top: none;    transform: translate(6px, -6px); }
 .hud-corner--br { bottom: 10px; right: 10px; border-left: none;  border-top: none;    transform: translate(-6px, -6px); }
+/* focus-within, not focus-visible: the focusable element is the overlay
+   anchor stretched inside the card, not the card element carrying .group. */
 .group:hover .hud-corner,
-.group:focus-visible .hud-corner {
+.group:focus-within .hud-corner {
   opacity: 1;
   transform: translate(0, 0);
 }

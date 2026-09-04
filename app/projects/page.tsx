@@ -34,7 +34,7 @@ export default function ProjectsIndexPage() {
     <div className="relative z-10 min-h-screen">
       <ProjectsChrome />
 
-      <main className="max-w-5xl mx-auto px-5 md:px-8 py-14 md:py-20">
+      <main id="main-content" className="max-w-5xl mx-auto px-5 md:px-8 py-14 md:py-20">
         <h1
           className="font-display font-semibold text-text mb-3"
           style={{ fontSize: "clamp(3rem, 6vw, 5rem)", lineHeight: 1 }}

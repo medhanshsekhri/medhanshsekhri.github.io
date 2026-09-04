@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
   AnimatePresence,
   motion,
+  useIsPresent,
   useMotionValue,
   useReducedMotion,
   useScroll,
@@ -29,6 +30,34 @@ const BUILDS = [
 
 const PHRASE_CLASS = "font-display italic font-semibold";
 const PHRASE_STYLE = { fontSize: "1.12em", lineHeight: 1.2 } as const;
+
+/**
+ * One phrase in the carousel.
+ *
+ * The outgoing and incoming phrases overlap: with AnimatePresence in its
+ * default mode both are mounted at once, so the window is never empty and the
+ * sentence never reads "I build .". A phrase that is on its way out is taken
+ * out of flow, so only the incoming one contributes to layout.
+ */
+function Phrase({ build }: { build: (typeof BUILDS)[number] }) {
+  const isPresent = useIsPresent();
+  return (
+    <motion.span
+      className={`inline-block ${PHRASE_CLASS}`}
+      style={{
+        ...PHRASE_STYLE,
+        color: build.color,
+        ...(isPresent ? null : { position: "absolute", top: 0, left: 0 }),
+      }}
+      initial={{ y: "110%", opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: "-110%", opacity: 0 }}
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+    >
+      {build.text}
+    </motion.span>
+  );
+}
 
 /* "I build <rotating phrase>." — phrases slide up through a masked window
    while the window's width eases to fit the incoming phrase. */
@@ -62,7 +91,7 @@ function BuildCarousel({ fontSize }: { fontSize: string }) {
 
   if (reduce) {
     return (
-      <p className="text-muted font-body mb-8" style={{ fontSize }}>
+      <p className="text-muted font-body" style={{ fontSize }}>
         I build radar scanners, flood-resistant housing, model rockets, truss
         towers, and obstacle-dodging rovers.
       </p>
@@ -70,7 +99,7 @@ function BuildCarousel({ fontSize }: { fontSize: string }) {
   }
 
   return (
-    <p className="text-muted font-body mb-8" style={{ fontSize }}>
+    <p className="text-muted font-body" style={{ fontSize }}>
       <span className="sr-only">
         I build radar scanners, flood-resistant housing, model rockets, truss
         towers, and obstacle-dodging rovers.
@@ -104,18 +133,8 @@ function BuildCarousel({ fontSize }: { fontSize: string }) {
           marginBottom: "-0.1em",
         }}
       >
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.span
-            key={idx}
-            className={`inline-block ${PHRASE_CLASS}`}
-            style={{ ...PHRASE_STYLE, color: BUILDS[idx].color }}
-            initial={{ y: "110%", opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: "-110%", opacity: 0 }}
-            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {BUILDS[idx].text}
-          </motion.span>
+        <AnimatePresence initial={false}>
+          <Phrase key={idx} build={BUILDS[idx]} />
         </AnimatePresence>
       </span>
       <span aria-hidden>.</span>
@@ -238,13 +257,22 @@ export default function Hero() {
           </span>
         </h1>
 
-        {/* Tagline: "I build" + a carousel of the actual builds */}
+        {/* Tagline: "I build" + a carousel of the actual builds, then the
+            ask itself - the short form of the sentence in Contact, which is
+            otherwise only visible at the very bottom of the page. */}
         <motion.div
+          className="mb-8"
           initial={reduce ? false : { opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.55, ease: "easeOut" }}
         >
           <BuildCarousel fontSize="clamp(1rem, 3.5vw, 1.35rem)" />
+          <p
+            className="font-body text-muted mt-2"
+            style={{ fontSize: "clamp(0.85rem, 2.4vw, 1rem)" }}
+          >
+            I&apos;m after internships in autonomous systems and aerospace.
+          </p>
         </motion.div>
 
         {/* Credential chip: frosted pill, UQ crest at readable size */}

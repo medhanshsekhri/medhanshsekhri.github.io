@@ -45,8 +45,11 @@ function PhotoTile({ src, alt, index }: { src: string; alt: string; index: numbe
         decoding="async"
         className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.06]"
       />
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/45 transition-colors duration-300 flex items-end p-2">
-        <p className="text-white text-[10px] leading-tight font-body opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+      {/* Below md the caption is always on, under a bottom-weighted scrim:
+          hover does not exist on touch, and nine unlabelled photos are no
+          use. From md up it stays a hover reveal over a flat wash. */}
+      <div className="absolute inset-0 flex items-end p-2 bg-gradient-to-t from-black/85 via-black/30 to-transparent md:bg-none md:bg-black/0 md:group-hover:bg-black/45 transition-colors duration-300">
+        <p className="text-white text-[10px] leading-tight font-body md:opacity-0 md:translate-y-1 md:group-hover:opacity-100 md:group-hover:translate-y-0 transition-all duration-300">
           {alt}
         </p>
       </div>

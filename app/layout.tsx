@@ -102,6 +102,14 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-screen">
+        {/* First thing in the tab order: skips the nav on the homepage and the
+            sticky chrome on /projects. Off-screen until focused. */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded focus:border focus:border-border focus:bg-surface focus:px-4 focus:py-2 focus:text-sm focus:font-body focus:text-text"
+        >
+          Skip to content
+        </a>
         <GlobalBackground />
         <FlightProgress />
         {children}
