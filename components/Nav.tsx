@@ -12,7 +12,7 @@ import SwapText from "./SwapText";
 import { useScrollLock } from "@/lib/overlay";
 
 const NAV_LINKS = [
-  { label: "Projects", href: "/projects" },
+  { label: "Projects", href: "/projects/" },
   { label: "About", href: "#about" },
   { label: "Contact", href: "#contact" },
 ];
