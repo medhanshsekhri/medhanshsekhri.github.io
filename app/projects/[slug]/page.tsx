@@ -24,19 +24,19 @@ export async function generateMetadata({
 
   return {
     title: project.title,
-    description: project.summary,
+    description: project.description,
     alternates: { canonical: url },
     openGraph: {
       type: "article",
       title: `${project.title} | Medhansh Sekhri`,
-      description: project.summary,
+      description: project.description,
       url,
       images: [{ url: image, alt: project.photos[0]?.alt ?? project.title }],
     },
     twitter: {
       card: "summary_large_image",
       title: `${project.title} | Medhansh Sekhri`,
-      description: project.summary,
+      description: project.description,
       images: [image],
     },
   };

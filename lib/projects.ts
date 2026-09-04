@@ -29,8 +29,18 @@ export interface Project {
   title: string;
   /** Intentionally blank: to be filled in a later pass, not invented here. */
   date: string;
+  /** Short hook for the homepage card. */
   summary: string;
+  /** Long technical version for the project page and metadata. */
+  description: string;
   outcome: string;
+  /**
+   * Labels for the three case-study columns. Each project keeps its own
+   * framing - a dragster has a Design phase, not a Challenge - so the
+   * headings are data rather than a fixed Challenge/Approach/Result.
+   */
+  headings: [string, string, string];
+  /** The three column bodies, paired positionally with `headings`. */
   challenge: string;
   approach: string;
   result: string;
@@ -46,9 +56,12 @@ export const PROJECTS: Project[] = [
     title: "Autonomous Radar Scanner",
     date: "",
     summary:
+      "Real-time 180° object detection built from scratch in C++, the sensing foundation of an autonomous drone.",
+    description:
       "A 180° ultrasonic radar built around an Arduino UNO: an HC-SR04 rangefinder on a servo sweeps the field of view while a Processing app renders detections in real time. All sweep and detection logic written from scratch in C++.",
     outcome:
       "Real-time object mapping across the full 180° sweep with a live radar display.",
+    headings: ["Challenge", "What I Did", "Result"],
     challenge:
       "Debugging embedded hardware with no prior experience. Staying methodical when nothing worked and every path seemed like a dead end.",
     approach:
@@ -81,9 +94,12 @@ export const PROJECTS: Project[] = [
     title: "Flood-Resistant Station-Keeping House",
     date: "",
     summary:
+      "Team-led, flood-resistant house that holds position in rising water, delivered on a $170 budget.",
+    description:
       "A model house that holds position in rising floodwater. I led a seven-person team and owned the electronics and firmware: an Arduino UNO R3 reading an MPU-6050, driving DC motors through an L298N H-bridge on an XPS foam hull.",
     outcome:
       "Held position under simulated flood conditions, delivered under the $170 AUD budget.",
+    headings: ["Challenge", "What I Did", "Result"],
     challenge:
       "Coordinating a team of seven across disciplines with no prior experience. Keeping the project on budget while meeting all structural and electrical constraints.",
     approach:
@@ -123,8 +139,11 @@ export const PROJECTS: Project[] = [
     title: "CO2 Dragster",
     date: "",
     summary:
+      "45g aerodynamic dragster designed in Fusion 360 and CNC-cut from balsa.",
+    description:
       "A 45 g CO2-powered dragster modelled in Fusion 360 and machined from balsa, shaped to minimise frontal area and drag within competition rules.",
     outcome: "0.49 s over the 1 m track, top 5 in the year group.",
+    headings: ["Design", "Build", "Result"],
     challenge:
       "Full car designed in Fusion 360. Optimised for aerodynamics and minimum frontal area within competition constraints.",
     approach:
@@ -144,8 +163,11 @@ export const PROJECTS: Project[] = [
     title: "Model Rocket",
     date: "",
     summary:
+      "Model rocket simulated for stability in OpenRocket, then built and launched.",
+    description:
       "Designed and simulated in OpenRocket to verify the stability margin before construction, then built, balanced, and launched on a B6-4 motor.",
     outcome: "97 m apogee, stable flight, clean parachute recovery.",
+    headings: ["Design", "Build", "Result"],
     challenge:
       "Designed in OpenRocket. Simulated flight trajectory and stability margin before construction.",
     approach:
@@ -163,8 +185,11 @@ export const PROJECTS: Project[] = [
     title: "Balsa Truss Tower",
     date: "",
     summary:
+      "Truss tower optimised to maximise load-to-weight ratio through geometry.",
+    description:
       "A balsa truss tower built for a structural efficiency competition. Geometry chosen to maximise load-to-weight ratio with predictable load paths; joints pinned and glued with weight tracked through the build.",
     outcome: "Failed exactly at the designed weak point under class load testing.",
+    headings: ["Approach", "Build", "Result"],
     challenge:
       "Applied truss geometry principles to minimise material use while maximising load capacity.",
     approach:
@@ -182,8 +207,11 @@ export const PROJECTS: Project[] = [
     title: "Autonomous Warehouse Rover",
     date: "",
     summary:
+      "EV3 rover that navigates a warehouse-style obstacle course with no human input.",
+    description:
       "A LEGO Mindstorms EV3 rover programmed to clear a warehouse-style obstacle course with no human input: ultrasonic sensor for obstacle detection, colour sensor for line following.",
     outcome: "Completed the full course autonomously.",
+    headings: ["Task", "Approach", "Result"],
     challenge:
       "Navigate a warehouse-style obstacle course without human input using onboard sensors.",
     approach:

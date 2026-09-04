@@ -23,10 +23,11 @@ function TechPill({ label }: { label: string }) {
  * renders comes from the project record.
  */
 export default function CaseStudy({ project }: { project: Project }) {
+  // Labels come from the project so each keeps its original framing.
   const columns = [
-    { heading: "Challenge", body: project.challenge },
-    { heading: "Approach", body: project.approach },
-    { heading: "Result", body: project.result },
+    { heading: project.headings[0], body: project.challenge },
+    { heading: project.headings[1], body: project.approach },
+    { heading: project.headings[2], body: project.result },
   ];
 
   return (
@@ -43,7 +44,7 @@ export default function CaseStudy({ project }: { project: Project }) {
         </h1>
 
         <p className="text-muted font-body text-base leading-relaxed mb-6 max-w-2xl">
-          {project.summary}
+          {project.description}
         </p>
 
         <p className="font-body text-sm text-muted leading-relaxed mb-12">

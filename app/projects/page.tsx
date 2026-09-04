@@ -73,7 +73,7 @@ export default function ProjectsIndexPage() {
                     {project.title}
                   </h2>
                   <p className="font-body text-sm md:text-base text-muted leading-relaxed mb-4">
-                    {project.summary}
+                    {project.description}
                   </p>
 
                   <div className="border-l-2 border-accent pl-4 mb-5">
