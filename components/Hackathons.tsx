@@ -106,7 +106,7 @@ function LogoPlate({
           aria-label="Metrix"
           className={`block whitespace-nowrap leading-none ${metrixClassName}`}
           style={{
-            fontFamily: "var(--font-geist), system-ui, sans-serif",
+            fontFamily: "var(--font-body)",
             fontWeight: 400,
             letterSpacing: "-0.02em",
           }}

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Geist } from "next/font/google";
+import { Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import GlobalBackground from "@/components/GlobalBackground";
 import FlightProgress from "@/components/FlightProgress";
@@ -8,14 +8,6 @@ const cormorant = Cormorant_Garamond({
   weight: ["300", "400", "500", "600", "700"],
   subsets: ["latin"],
   variable: "--font-cormorant",
-  display: "swap",
-});
-
-// Used only by the Metrix wordmark in the Hackathons section.
-const geist = Geist({
-  weight: ["400"],
-  subsets: ["latin"],
-  variable: "--font-geist",
   display: "swap",
 });
 
@@ -93,7 +85,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${geist.variable}`} suppressHydrationWarning>
+    <html lang="en" className={cormorant.variable} suppressHydrationWarning>
       <head>
         <link
           rel="stylesheet"
