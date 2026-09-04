@@ -1,0 +1,4 @@
+User-Agent: *
+Allow: /
+
+Sitemap: https://medhanshsekhri.github.io/sitemap.xml
