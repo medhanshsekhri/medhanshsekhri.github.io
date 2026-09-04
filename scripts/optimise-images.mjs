@@ -99,6 +99,7 @@ const DISPLAY_WIDTHS = {
   "news2.jpg": 233,
   "biology.jpg": 233,
   "nightlight.jpg": 233,
+  "wos.jpeg": 233,
 
   // --- Hero: UQ crest in a 42px circle with 4px padding -> 34px ---
   "UQ-300x300.png": 34,
@@ -109,7 +110,11 @@ const DISPLAY_WIDTHS = {
  * so the directory is complete, but nothing links to the output.
  */
 const UNREFERENCED_DEFAULT = 800;
-const UNREFERENCED = new Set(["Soldering.jpg"]);
+const UNREFERENCED = new Set([
+  "Soldering.jpg",
+  // Replaced in the About grid by wos; source kept, output no longer emitted.
+  "news.jpg",
+]);
 
 /** Line art and logos keep more quality than photographs. */
 const HIGH_QUALITY = new Set([

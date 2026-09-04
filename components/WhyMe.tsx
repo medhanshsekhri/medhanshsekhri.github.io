@@ -15,7 +15,7 @@ const PARAGRAPHS = [
 const PHOTOS = [
   { src: "/diamondda40.webp", alt: "Flying a Diamond DA40 at RAAF Amberley" },
   { src: "/networking.webp",  alt: "International Science School 2025 gala" },
-  { src: "/news.webp",        alt: "WIN News interview" },
+  { src: "/wos.webp",         alt: "Weekend of Startups 2026" },
   { src: "/UQ.webp",          alt: "University of Queensland" },
   { src: "/cadets.webp",      alt: "Airforce Cadets Bivouac" },
   { src: "/pose.webp",        alt: "Arduino project" },
