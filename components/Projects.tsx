@@ -142,6 +142,23 @@ function TechPill({ label }: { label: string }) {
   );
 }
 
+/* Modal gallery photos. Written out rather than derived from the filename:
+   the alt text is read aloud by screen readers and also becomes the lightbox
+   aria-label, so "Backview FRH" is not good enough. Same {src, alt} shape as
+   PHOTOS in WhyMe.tsx. */
+const FRH_PHOTOS = [
+  { src: "/Frontview_FRH.webp", alt: "Flood-resistant house from the front, hull wrapped and tethered on the workbench" },
+  { src: "/Backview_FRH.webp",  alt: "Flood-resistant house from behind, showing the motor wiring and paired thrusters" },
+  { src: "/Topview_FRH.webp",   alt: "Flood-resistant house from above with the roof lifted off, showing the Arduino and L298N motor drivers inside" },
+];
+
+const RADAR_PHOTOS = [
+  { src: "/frontview.webp", alt: "Radar scanner, front view" },
+  { src: "/topview.webp",   alt: "Radar scanner, top view" },
+  { src: "/sideview.webp",  alt: "Radar scanner, side view" },
+  { src: "/topview2.webp",  alt: "Radar scanner wiring: the HC-SR04 sensor and Arduino held beside the breadboard" },
+];
+
 function ProjectModalContent({ id }: { id: number }) {
   if (id === 1) return (
     <div>
@@ -163,9 +180,9 @@ function ProjectModalContent({ id }: { id: number }) {
         {["Arduino UNO", "C++", "L298N H-Bridge", "12V DC Motors", "3D Printing", "Tinkercad", "XPS Foam", "Corflute"].map((t) => <TechPill key={t} label={t} />)}
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
-        {["Frontview_FRH.webp","Backview_FRH.webp","Topview_FRH.webp"].map((img) => (
-          <div key={img} className="aspect-square rounded-lg overflow-hidden border border-border">
-            <img loading="lazy" {...responsiveImage(`/${img}`, "(max-width: 639px) 100vw, 264px")} alt={img.replace(".webp","").replace(/_/g," ")} className="w-full h-full object-cover" onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
+        {FRH_PHOTOS.map((photo) => (
+          <div key={photo.src} className="aspect-square rounded-lg overflow-hidden border border-border">
+            <img loading="lazy" {...responsiveImage(photo.src, "(max-width: 639px) 100vw, 264px")} alt={photo.alt} className="w-full h-full object-cover" onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
           </div>
         ))}
       </div>
@@ -200,9 +217,9 @@ function ProjectModalContent({ id }: { id: number }) {
         {["Arduino UNO", "C++", "HC-SR04", "SG90 Servo", "Processing", "Embedded Systems"].map((t) => <TechPill key={t} label={t} />)}
       </div>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
-        {["frontview.webp","topview.webp","sideview.webp","topview2.webp"].map((img) => (
-          <div key={img} className="aspect-square rounded-lg overflow-hidden border border-border">
-            <img loading="lazy" {...responsiveImage(`/${img}`, "(max-width: 639px) 100vw, 264px")} alt={img.replace(".webp","").replace(/_/g," ")} className="w-full h-full object-cover" onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
+        {RADAR_PHOTOS.map((photo) => (
+          <div key={photo.src} className="aspect-square rounded-lg overflow-hidden border border-border">
+            <img loading="lazy" {...responsiveImage(photo.src, "(max-width: 639px) 100vw, 264px")} alt={photo.alt} className="w-full h-full object-cover" onError={(e)=>{(e.target as HTMLImageElement).style.display="none";}} />
           </div>
         ))}
       </div>

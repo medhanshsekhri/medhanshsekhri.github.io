@@ -180,16 +180,19 @@ async function main() {
     const outName = file.replace(RASTER, ".webp");
     const outPath = path.join(OUT_DIR, outName);
 
-    const image = sharp(srcPath);
-    const meta = await image.metadata();
+    const meta = await sharp(srcPath).metadata();
+    // Orientation 5-8 swap the axes once the EXIF rotation is applied.
+    const swapped = (meta.orientation ?? 1) >= 5;
+    const srcWidth = swapped ? meta.height : meta.width;
 
     const displayWidth = DISPLAY_BY_STEM[stem(file)] ?? UNREFERENCED_DEFAULT;
-    const target = Math.min(meta.width, displayWidth);
-    const target2x = Math.min(meta.width, Math.ceil(displayWidth * DPR));
+    const target = Math.min(srcWidth, displayWidth);
+    const target2x = Math.min(srcWidth, Math.ceil(displayWidth * DPR));
     const quality = HIGH_QUALITY_STEMS.has(stem(file)) ? 92 : 80;
 
     // 1x: exactly the display width, for non-retina screens.
     await sharp(srcPath)
+      .rotate()
       .resize({ width: target, withoutEnlargement: true })
       .webp({ quality, effort: 6 })
       .toFile(outPath);
@@ -197,6 +200,7 @@ async function main() {
     // 2x: retina tier.
     const out2xPath = path.join(OUT_DIR, file.replace(RASTER, "@2x.webp"));
     await sharp(srcPath)
+      .rotate()
       .resize({ width: target2x, withoutEnlargement: true })
       .webp({ quality, effort: 6 })
       .toFile(out2xPath);
@@ -208,6 +212,7 @@ async function main() {
     if (LIGHTBOX_STEMS.has(stem(file))) {
       const fullPath = path.join(OUT_DIR, file.replace(RASTER, "-full.webp"));
       await sharp(srcPath)
+        .rotate()
         .resize({
           width: LIGHTBOX_LONG_EDGE,
           height: LIGHTBOX_LONG_EDGE,
@@ -231,7 +236,7 @@ async function main() {
     rows.push({
       file,
       outName,
-      from: `${meta.width}px`,
+      from: `${srcWidth}px`,
       to: `${target}/${target2x}px`,
       before,
       after,
