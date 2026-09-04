@@ -1,6 +1,5 @@
 import Nav from "@/components/Nav";
 import Hero from "@/components/Hero";
-import TechMarquee from "@/components/TechMarquee";
 import Projects from "@/components/Projects";
 import Hackathons from "@/components/Hackathons";
 import WhyMe from "@/components/WhyMe";
@@ -19,7 +18,6 @@ export default function Home() {
       <Nav />
       <main id="main-content">
         <Hero />
-        <TechMarquee />
         <Rule />
         <Projects />
         <Rule />

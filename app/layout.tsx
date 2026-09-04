@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
 import GlobalBackground from "@/components/GlobalBackground";
-import FlightProgress from "@/components/FlightProgress";
 
 const cormorant = Cormorant_Garamond({
   weight: ["300", "400", "500", "600", "700"],
@@ -111,7 +110,6 @@ export default function RootLayout({
           Skip to content
         </a>
         <GlobalBackground />
-        <FlightProgress />
         {children}
       </body>
     </html>
